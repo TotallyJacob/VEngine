@@ -252,6 +252,9 @@
     <ClInclude Include="ThreadPool.h">
       <Filter>Header Files\concurrency</Filter>
     </ClInclude>
+    <ClInclude Include="assert.hpp">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VEngine.cpp">
