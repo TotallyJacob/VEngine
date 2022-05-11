@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{f9473a09-7b50-47e6-b764-ad5a90b8c375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer">
+      <UniqueIdentifier>{3fbdbbc0-f179-47dd-809d-b2c0a39df8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer">
+      <UniqueIdentifier>{49528c02-513b-4cce-b92c-21da95d931b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\input">
+      <UniqueIdentifier>{79f0c605-8167-40ba-8e5a-74c2f0cdf8b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{0cac36a2-bb5e-4f4b-9d90-b9b8566c3436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\buffers">
+      <UniqueIdentifier>{c00863dc-7c12-4a13-8ebd-24f924364e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\buffers">
+      <UniqueIdentifier>{c60361aa-7aa8-484c-ae78-cb91782486d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\buffers\objects">
+      <UniqueIdentifier>{f07daa66-c54d-4e22-88fc-a6fd25ec4d90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\buffers\objects">
+      <UniqueIdentifier>{f0eed979-ed02-48fd-99f2-b3aad8812ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\mesh">
+      <UniqueIdentifier>{64393b32-d3c2-4707-af33-5037b26409b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\textures">
+      <UniqueIdentifier>{a7a6f9b8-bca4-4aa4-bd70-be2236ebfb64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\textures">
+      <UniqueIdentifier>{c111c74a-a262-404a-a025-4bff2a449d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{dbb5a140-fcec-40c7-bb3c-6f58584926d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\shader">
+      <UniqueIdentifier>{5bc810cd-7a1a-406a-906e-cf195f693594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\shader\storage">
+      <UniqueIdentifier>{b4cb44b5-ce23-41b7-a0ee-386f9047e255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\shader\programs">
+      <UniqueIdentifier>{b8e289d9-4155-4ff0-ba7b-8e1d536f727c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\shader">
+      <UniqueIdentifier>{1e0386fb-0ee6-4730-a8a6-b93777dda2b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\deffered rendering">
+      <UniqueIdentifier>{e75c1c64-3176-419e-92d4-fef399bd43e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\deffered rendering">
+      <UniqueIdentifier>{9bd82f7f-5a60-47e0-a1f7-bd227de928f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\drawer">
+      <UniqueIdentifier>{a80a5067-debb-4b1f-a4ce-669c2c7b39b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\drawer">
+      <UniqueIdentifier>{f54e8439-eace-4b4b-8ec9-5514ef43e06c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ecs">
+      <UniqueIdentifier>{cee257d5-595e-4550-8775-814eb1ca1b13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs">
+      <UniqueIdentifier>{5240ce1c-3376-4ec0-aa69-27b460664075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ecs\non-managers">
+      <UniqueIdentifier>{de67609a-b174-43d6-83e7-41e875e22883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\mesh">
+      <UniqueIdentifier>{19033f5e-1571-4fff-98c8-10ea45b91b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\data">
+      <UniqueIdentifier>{8bc79d9c-b2b1-43c7-b58a-f3a9e1159e89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\data">
+      <UniqueIdentifier>{412a29f9-4199-4d61-b62b-4ee758bfbe19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\logging">
+      <UniqueIdentifier>{85f5a67b-ec6e-46d8-ad99-fd59b0c52f2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\logging">
+      <UniqueIdentifier>{95cd191e-88d0-4cbb-8a81-c617e759f270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\shader\program">
+      <UniqueIdentifier>{dbbba21b-18b0-49f6-9f0e-dbfdfaba89f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\shader\storage">
+      <UniqueIdentifier>{29cfbd9d-2c83-4218-9819-45fb7d43ebd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\shader\managers">
+      <UniqueIdentifier>{646535de-3d18-47fd-b5e6-51a06eff634f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\shader\managers">
+      <UniqueIdentifier>{3867d431-555a-4bd7-975c-c8fe17a9bd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{b1171aa5-2094-4fdd-a2d5-da178433d7d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\concurrency">
+      <UniqueIdentifier>{a2c0e368-aa8e-4412-8fd5-ed3b4d43ddbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\concurrency">
+      <UniqueIdentifier>{1b3da99c-ded2-4c32-8b6f-d665249d7e37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtil.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFWUtil.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="input\KeyboardInputManager.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="input\MouseInputManager.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\PersistentMapBufferUtil.h">
+      <Filter>Header Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableVbo.h">
+      <Filter>Header Files\renderer\buffers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableEbo.h">
+      <Filter>Header Files\renderer\buffers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableDib.h">
+      <Filter>Header Files\renderer\buffers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\Shaders.hpp">
+      <Filter>Header Files\renderer\shader\programs</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderUtil.h">
+      <Filter>Header Files\renderer\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\TextureManager.h">
+      <Filter>Header Files\renderer\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\stb.h">
+      <Filter>Header Files\renderer\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\DefferedRenderer.h">
+      <Filter>Header Files\renderer\deffered rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MultiIndirectDrawer.h">
+      <Filter>Header Files\renderer\drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MeshManager.h">
+      <Filter>Header Files\renderer\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\ComponentArray.h">
+      <Filter>Header Files\ecs\non-managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\IComponentArray.h">
+      <Filter>Header Files\ecs\non-managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\System.h">
+      <Filter>Header Files\ecs\non-managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\ComponentManager.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\EntityManager.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\SystemManager.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\Coordinator.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\IndirectDrawerCuller.h">
+      <Filter>Header Files\renderer\drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\IndirectDrawerLodManager.h">
+      <Filter>Header Files\renderer\drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableBuffer.h">
+      <Filter>Header Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableShaderStorage.h">
+      <Filter>Header Files\renderer\shader\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.hpp">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\IMutableBuffer.h">
+      <Filter>Header Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderProgramParser.h">
+      <Filter>Header Files\renderer\shader\programs</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderStorageBinder.h">
+      <Filter>Header Files\renderer\shader\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\IMutableShaderStorage.h">
+      <Filter>Header Files\renderer\shader\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderStorageManager.h">
+      <Filter>Header Files\renderer\shader\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderProgramManager.h">
+      <Filter>Header Files\renderer\shader\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderManager.h">
+      <Filter>Header Files\renderer\shader\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ShaderStorageManager.ipp">
+      <Filter>Source Files\renderer\shader\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteArray.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteArray.ipp">
+      <Filter>Source Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableBuffer.ipp">
+      <Filter>Source Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Header Files\concurrency</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="input\KeyboardInputManager.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="input\MouseInputManager.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MutableVbo.cpp">
+      <Filter>Source Files\renderer\buffers\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MutableEbo.cpp">
+      <Filter>Source Files\renderer\buffers\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MutableDib.cpp">
+      <Filter>Source Files\renderer\buffers\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\TextureManager.cpp">
+      <Filter>Source Files\renderer\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\DefferedRenderer.cpp">
+      <Filter>Source Files\renderer\deffered rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MultiIndirectDrawer.cpp">
+      <Filter>Source Files\renderer\drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\EntityManager.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MeshManager.cpp">
+      <Filter>Source Files\renderer\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\SystemManager.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\ComponentManager.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\Coordinator.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\MultiIndirectSystem.h">
+      <Filter>Header Files\renderer\drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\IndirectDrawerCuller.cpp">
+      <Filter>Source Files\renderer\drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\IndirectDrawerLodManager.cpp">
+      <Filter>Source Files\renderer\drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\ShaderProgramParser.cpp">
+      <Filter>Source Files\renderer\shader\program</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\ShaderStorageBinder.cpp">
+      <Filter>Source Files\renderer\shader\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\ShaderStorageManager.cpp">
+      <Filter>Source Files\renderer\shader\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\ShaderManager.cpp">
+      <Filter>Source Files\renderer\shader\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\ShaderProgramManager.cpp">
+      <Filter>Source Files\renderer\shader\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>Source Files\concurrency</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

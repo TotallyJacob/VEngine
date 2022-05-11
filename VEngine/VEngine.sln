@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VEngine", "..\..\VSpace\VEngine\VEngine.vcxproj", "{5331525B-61B7-4964-BE98-9621F4D49CDF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VEngine", "VEngine\VEngine.vcxproj", "{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +13,19 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Debug|x64.ActiveCfg = Debug|x64
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Debug|x64.Build.0 = Debug|x64
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Debug|x86.ActiveCfg = Debug|Win32
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Debug|x86.Build.0 = Debug|Win32
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Release|x64.ActiveCfg = Release|x64
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Release|x64.Build.0 = Release|x64
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Release|x86.ActiveCfg = Release|Win32
-		{5331525B-61B7-4964-BE98-9621F4D49CDF}.Release|x86.Build.0 = Release|Win32
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Debug|x64.ActiveCfg = Debug|x64
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Debug|x64.Build.0 = Debug|x64
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Debug|x86.ActiveCfg = Debug|Win32
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Debug|x86.Build.0 = Debug|Win32
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Release|x64.ActiveCfg = Release|x64
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Release|x64.Build.0 = Release|x64
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Release|x86.ActiveCfg = Release|Win32
+		{F9FBFC4B-24E9-4E77-AF9F-9C2F57E491DF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {48AFD4F6-58E1-4CEF-8D18-4C6A164ACC18}
+		SolutionGuid = {3C130F8D-6581-4437-826F-80F62CD841F5}
 	EndGlobalSection
 EndGlobal
