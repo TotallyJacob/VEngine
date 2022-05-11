@@ -244,11 +244,4 @@
   <ItemGroup>
     <ClInclude Include="renderer\MutableBuffer.ipp" />
   </ItemGroup>
-  <Target Name="PreBuildEvent">
-    <Message Text="#### Building PrecompileProgram ####" Importance="high" />
-    <MSBuild Projects="@(ProjectToBuild)" />
-    <Message Text="#### Running PrecompileProgram ####" Importance="high" />
-    <Exec Command="$(SolutionDir)x64\$(Configuration)\VEnginePrecompile.exe  %(Binaries.Identity)" />
-    <Message Text="#### Finished Running PrecompileProgram ####" Importance="high" />
-  </Target>
 </Project>
