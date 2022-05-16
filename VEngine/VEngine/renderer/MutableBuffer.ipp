@@ -244,6 +244,7 @@ MUTABLE_BUFFER_TEMPLATE
 inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_sync_on_readbuf()
 {
     GLsync sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+    glFlush();
     m_fences[m_readbuf_index] = sync;
 }
 

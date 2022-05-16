@@ -121,6 +121,15 @@
     <Filter Include="Source Files\concurrency">
       <UniqueIdentifier>{1b3da99c-ded2-4c32-8b6f-d665249d7e37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\renderer\buffers\shader storage">
+      <UniqueIdentifier>{f6e1290d-7980-4c22-9b0a-849419b9d6b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer\buffers\sync">
+      <UniqueIdentifier>{d3c80262-8e49-4476-a062-56a3852610fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderer\buffers\sync">
+      <UniqueIdentifier>{c5736393-ad10-4d9d-949d-99cb444bc39a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VEngine.h">
@@ -207,9 +216,6 @@
     <ClInclude Include="renderer\MutableBuffer.h">
       <Filter>Header Files\renderer\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\MutableShaderStorage.h">
-      <Filter>Header Files\renderer\shader\storage</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
@@ -223,9 +229,6 @@
       <Filter>Header Files\renderer\shader\programs</Filter>
     </ClInclude>
     <ClInclude Include="renderer\ShaderStorageBinder.h">
-      <Filter>Header Files\renderer\shader\storage</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer\IMutableShaderStorage.h">
       <Filter>Header Files\renderer\shader\storage</Filter>
     </ClInclude>
     <ClInclude Include="renderer\ShaderStorageManager.h">
@@ -254,6 +257,15 @@
     </ClInclude>
     <ClInclude Include="assert.hpp">
       <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableShaderStorage.h">
+      <Filter>Header Files\renderer\buffers\shader storage</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\IMutableShaderStorage.h">
+      <Filter>Header Files\renderer\buffers\shader storage</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\SyncManager.h">
+      <Filter>Header Files\renderer\buffers\sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
       <Filter>Source Files\concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\SyncManager.cpp">
+      <Filter>Source Files\renderer\buffers\sync</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
