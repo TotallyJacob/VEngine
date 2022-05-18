@@ -284,9 +284,6 @@
     <ClCompile Include="renderer\MutableEbo.cpp">
       <Filter>Source Files\renderer\buffers\objects</Filter>
     </ClCompile>
-    <ClCompile Include="renderer\MutableDib.cpp">
-      <Filter>Source Files\renderer\buffers\objects</Filter>
-    </ClCompile>
     <ClCompile Include="renderer\TextureManager.cpp">
       <Filter>Source Files\renderer\textures</Filter>
     </ClCompile>

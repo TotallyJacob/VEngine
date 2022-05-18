@@ -7,17 +7,19 @@ MultiIndirectDrawer::MultiIndirectDrawer(MeshManager* mesh_manager, std::vector<
     init(mesh_manager, meshIds);
 }
 
-void MultiIndirectDrawer::draw(const unsigned int shader_program) const
+void MultiIndirectDrawer::draw(const unsigned int shader_program)
 {
     glUseProgram(shader_program);
     bind_vao();
     m_mutable_dib.bind();
 
     glMultiDrawElementsIndirect(GL_TRIANGLES,
-                                GL_UNSIGNED_INT, // indices are unsigned ints
-                                (GLvoid*)0,      // offset into draw buffer
-                                m_num_objects,   // Draw objects
-                                0);              // No stride (draw commands are tightly packed)
+                                GL_UNSIGNED_INT,                                    // indices are unsigned ints
+                                (const void*)(m_mutable_dib.get_indirect_offset()), // offset into draw buffer
+                                m_num_objects,                                      // Draw objects
+                                0);                                                 // No stride (draw commands are tightly packed)
+
+    m_mutable_dib.insert_sync_on_readbuf();
 
     // m_mutable_dib.unbind();
     // unbind_vao();
@@ -114,12 +116,12 @@ void MultiIndirectDrawer::init_buf_objects(std::vector<float>& vboData, std::vec
     glGenBuffers(1, &m_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 
-    m_mutable_dib.gen(drawIndirectArray.size()); // Auto binds/unbinds
+    m_mutable_dib.gen(drawIndirectArray.size(), vengine::SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC); // Auto binds/unbinds
 
     // copy the data into buffers
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vboData.size(), &vboData.front(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * eboData.size(), &eboData.front(), GL_STATIC_DRAW);
-    m_mutable_dib.set_updatebuf_data(&drawIndirectArray.front(), drawIndirectArray.size(), 0);
+    m_mutable_dib.set_initial_data(&drawIndirectArray.front(), drawIndirectArray.size());
 
     MeshManager::set_vertex_attrib_ptrs(meshType);
 

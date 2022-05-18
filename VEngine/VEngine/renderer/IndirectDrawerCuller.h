@@ -29,25 +29,27 @@ class IndirectDrawerCuller
 
         inline void swap_buffers()
         {
-            // Syncing
+            // Syncing 1
             GLsync sync = m_dib_to_entity_data->get_readbuf_sync();
             m_dib_to_entity_data->standard_wait_sync<true, false>(sync, "indirect drawer culler ");
-
-            // Doing everything elsed
             m_dib_to_entity_data->swap_buffers<true>();
-
             m_dib_to_entity_data->copy_previous_updatebuf_into_updatebuf();
-            m_dib_to_entity_data->delete_readbuf_sync();
+
+            // Syncing 2
+            GLsync sync2 = m_mutable_dib->get_readbuf_sync();
+            m_mutable_dib->standard_wait_sync<true, false>(sync2, "indirect dib buffer sync.");
+            m_mutable_dib->swap_buffers<true>();
+            m_mutable_dib->copy_previous_updatebuf_into_updatebuf();
         }
 
         // Setting stuff
-        inline void init(MutableDib* dib, const std::unordered_map<unsigned int, unsigned int>& meshLodIdToDibIndex)
+        inline void init(MutableDib<3>* dib, const std::unordered_map<unsigned int, unsigned int>& meshLodIdToDibIndex)
         {
             set_mutable_dib(dib);
             set_mesh_lodId_to_dib_index(meshLodIdToDibIndex);
             set_num_objects();
         }
-        inline void set_mutable_dib(MutableDib* dib)
+        inline void set_mutable_dib(MutableDib<3>* dib)
         {
             this->m_mutable_dib = dib;
         }
@@ -80,8 +82,8 @@ class IndirectDrawerCuller
 
     private:
 
-        unsigned int m_num_objects = 0;
-        MutableDib*  m_mutable_dib = nullptr;
+        unsigned int   m_num_objects = 0;
+        MutableDib<3>* m_mutable_dib = nullptr;
 
         // This shader storage copies and thereby does not change the binding info....
         MutableShaderStorage<unsigned int, GL_SHADER_STORAGE_BUFFER, 3>* m_dib_to_entity_data;

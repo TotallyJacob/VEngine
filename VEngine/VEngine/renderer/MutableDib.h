@@ -14,12 +14,25 @@ struct IndirectElements
         unsigned int base_instance = 0; // Used for spliting instances between draw calls apparently.
 };
 
-class MutableDib : public MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, 1>
+constexpr static const MutableBufferFlags mdibf = {true, false, false};
+
+template <const unsigned int num_buffers>
+class MutableDib : public MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, mdibf>
 {
     public:
 
-        MutableDib(unsigned int num_elements, bool gen);
-        ~MutableDib() = default;
+        MutableDib() = default;
+
+        MutableDib(unsigned int num_elements, bool gen)
+            : MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, mdibf>(num_elements, gen,
+                                                                                           SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC)
+        {
+        }
+
+        const GLintptr get_indirect_offset() const
+        {
+            return this->m_readbuf_binding_data->offset;
+        }
 };
 
 } // namespace vengine

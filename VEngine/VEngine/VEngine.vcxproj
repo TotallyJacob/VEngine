@@ -219,7 +219,6 @@
     <ClCompile Include="renderer\MultiIndirectDrawer.cpp" />
     <ClCompile Include="renderer\MultiIndirectSystem.h" />
     <ClCompile Include="renderer\MutableEbo.cpp" />
-    <ClCompile Include="renderer\MutableDib.cpp" />
     <ClCompile Include="renderer\MutableVbo.cpp" />
     <ClCompile Include="renderer\ShaderManager.cpp" />
     <ClCompile Include="renderer\ShaderProgramManager.cpp" />

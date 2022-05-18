@@ -43,12 +43,12 @@ class MultiIndirectDrawer
             return m_meshIds;
         }
 
-        MutableDib* get_mutable_dib()
+        MutableDib<3>* get_mutable_dib()
         {
             return &m_mutable_dib;
         }
 
-        void draw(const unsigned int shader_program) const;
+        void draw(const unsigned int shader_program);
 
     private:
 
@@ -58,8 +58,8 @@ class MultiIndirectDrawer
         unsigned int m_shader_program = 0, m_num_objects = 0;
 
         // OpenGL buffers
-        MutableDib   m_mutable_dib = {0, false};
-        unsigned int m_vao = 0, m_vbo = 0, m_ebo = 0;
+        MutableDib<3> m_mutable_dib = {};
+        unsigned int  m_vao = 0, m_vbo = 0, m_ebo = 0;
 
         // Test things
         void change_instance_count(unsigned int& _numInstances, unsigned int index, const int byHowMuch)
