@@ -84,13 +84,6 @@ class MutableBuffer : public IMutableBuffer
 
 
         // insert
-        void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt, unsigned int numElementsToShift);
-        void insert_data_no_shift(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
-        void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
-        void insert_data_virtual_max(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
-                                     unsigned int virtualMaxNumberOfElements);
-        void shift_data(unsigned int indexToShiftFrom, unsigned int indexToShiftTo, unsigned int numElementsToShift);
-        void shift_data_virtual_max(unsigned int indexToShiftFrom, unsigned int indexToShiftTo, unsigned int virtualMaxNumberOfElements);
         void set_updatebuf_data(DATA_TYPE* data, unsigned int numOfElements, unsigned int startPoint);
         void fill_persistent_map(DATA_TYPE* value_to_fill);
 
@@ -118,7 +111,6 @@ class MutableBuffer : public IMutableBuffer
         constexpr const static GLsync m_invalid_sync_object = 0;
 
         // gl arrays
-        ByteArray<DATA_TYPE, 1>           m_read_write_buffer = {};
         ByteArray<DATA_TYPE, num_buffers> m_persistent_maps = {};
         GLsync                            m_fences[num_buffers] = {0};
         BindingData                       m_binding_data[num_buffers] = {};
@@ -140,9 +132,6 @@ class MutableBuffer : public IMutableBuffer
         constexpr auto get_storage_flags() const -> GLbitfield;
         constexpr auto get_map_flags() const -> GLbitfield;
 };
-
-
-;
 
 } // namespace vengine
 

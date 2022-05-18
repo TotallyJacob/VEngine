@@ -264,6 +264,15 @@
     <ClInclude Include="renderer\SyncManager.h">
       <Filter>Header Files\renderer\buffers\sync</Filter>
     </ClInclude>
+    <ClInclude Include="renderer\CourierBuffer.h">
+      <Filter>Header Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\CourierBuffer.ipp">
+      <Filter>Source Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\PersistentMapBufferUtil.ipp">
+      <Filter>Source Files\renderer\buffers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VEngine.cpp">

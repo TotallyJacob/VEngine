@@ -365,48 +365,6 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::copy_previous_updatebuf_into_updat
     set_updatebuf_data(m_persistent_maps.data[m_previous_updatebuf_index], get_num_elements(), 0);
 }
 
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
-                                                          unsigned int numElementsToShift)
-{
-    shift_data(indexToInsertAt, indexToInsertAt + toInsert.size(), numElementsToShift);
-    set_updatebuf_data(&toInsert.front(), toInsert.size(), indexToInsertAt);
-}
-
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_data_no_shift(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt)
-{
-
-    set_updatebuf_data(&toInsert.front(), toInsert.size(), indexToInsertAt);
-}
-
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt)
-{
-    insert_data(toInsert, indexToInsertAt, get_num_elements() - indexToInsertAt);
-}
-
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_data_virtual_max(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
-                                                                      unsigned int virtualMaxNumberOfElements)
-{
-    insert_data(toInsert, indexToInsertAt, virtualMaxNumberOfElements - indexToInsertAt);
-}
-
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::shift_data(unsigned int indexToShiftFrom, unsigned int indexToShiftTo,
-                                                         unsigned int numElementsToShift)
-{
-    set_updatebuf_data(&m_persistent_maps.data[m_updatebuf_index][indexToShiftFrom], numElementsToShift, indexToShiftTo);
-}
-
-MUTABLE_BUFFER_TEMPLATE
-void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::shift_data_virtual_max(unsigned int indexToShiftFrom, unsigned int indexToShiftTo,
-                                                                     unsigned int virtualMaxNumberOfElements)
-{
-    set_updatebuf_data(&m_persistent_maps.data[m_updatebuf_index][indexToShiftFrom], virtualMaxNumberOfElements - indexToShiftFrom,
-                       indexToShiftTo);
-}
 
 MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_updatebuf_data(DATA_TYPE* data, unsigned int numOfElements, unsigned int startPoint)
@@ -419,7 +377,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(DATA_TYPE* val
 {
     for (int i = 0; i < num_buffers; i++)
     {
-        fill_persistent_map(i, value_to_fill);
+        util::persistent_map_fill(m_persistent_maps.data[i], value_to_fill, get_num_elements());
     }
 }
 

@@ -93,6 +93,7 @@ void IndirectDrawerCuller::uncull_entities_batched(const std::vector<unsigned in
     unsigned int       sum = 0;
     const auto         dib1 = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1);
     const unsigned int maxFeasibleValue = dib1->base_instance + dib1->prim_count;
+    unsigned int*      update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
     for (int i = 0; i < m_num_objects - 1; i++)
     {
         const auto         dib = m_mutable_dib->get_updatebuf_persistent_map(i);
@@ -102,7 +103,9 @@ void IndirectDrawerCuller::uncull_entities_batched(const std::vector<unsigned in
         if (ordered_ssbos.size() == 0)
             continue;
 
-        m_dib_to_entity_data->insert_data_virtual_max(ordered_ssbos, toCpyFrom + sum, maxFeasibleValue + sum);
+
+        util::insert_all_data(update_buf, ordered_ssbos, toCpyFrom + sum, maxFeasibleValue + sum);
+        // m_dib_to_entity_data->insert_data_virtual_max(ordered_ssbos, toCpyFrom + sum, maxFeasibleValue + sum);
 
         sum += ordered_ssbos.size();
     }
@@ -110,7 +113,8 @@ void IndirectDrawerCuller::uncull_entities_batched(const std::vector<unsigned in
     auto& ordered_ssbos = ordered_ssboIds.at(m_num_objects - 1);
     if (ordered_ssbos.size() != 0)
     {
-        m_dib_to_entity_data->insert_data_no_shift(ordered_ssbos, maxFeasibleValue + sum);
+        util::insert_data_no_shift(update_buf, ordered_ssbos, maxFeasibleValue + sum);
+        // m_dib_to_entity_data->insert_data_no_shift(ordered_ssbos, maxFeasibleValue + sum);
     }
 
     for (int i = 0; i < m_num_objects; i++)
@@ -135,11 +139,13 @@ void IndirectDrawerCuller::uncull_entities(unsigned int meshId, unsigned int ssb
 
     const unsigned int currentIndex = numInstances + gl_BaseInstance - 1;
 
+    unsigned int* update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
     if (currentIndex < maxFeasibleValue - 1)
     {
 
-        m_dib_to_entity_data->shift_data_virtual_max(currentIndex, currentIndex + 1,
-                                                     maxFeasibleValue); // As numInstances and so on Increase
+        util::shift_data_virtual_max(update_buf, currentIndex, currentIndex + 1, maxFeasibleValue);
+        // m_dib_to_entity_data->shift_data_virtual_max(currentIndex, currentIndex + 1,
+        //  maxFeasibleValue); // As numInstances and so on Increase
     }
 
     *m_dib_to_entity_data->get_updatebuf_persistent_map(currentIndex) = ssboId;
@@ -197,14 +203,16 @@ void IndirectDrawerCuller::cull_entities_batched(const std::vector<unsigned int>
         numEntitiesRemoved++;
     }
 
-    unsigned int sum = 0;
+    unsigned int  sum = 0;
+    unsigned int* update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
     for (int i = 0; i < m_num_objects - 1; i++)
     {
         const auto  dib = m_mutable_dib->get_updatebuf_persistent_map(i);
         const auto& numEntitiesRemoved = numEntitiesRemovedPerDib.at(i);
         const auto  toCpyFrom = dib->prim_count + dib->base_instance;
 
-        m_dib_to_entity_data->shift_data_virtual_max(toCpyFrom - sum, toCpyFrom - sum - numEntitiesRemoved, maxFeasibleValue);
+        util::shift_data_virtual_max(update_buf, toCpyFrom - sum, toCpyFrom - sum - numEntitiesRemoved, maxFeasibleValue);
+        // m_dib_to_entity_data->shift_data_virtual_max(toCpyFrom - sum, toCpyFrom - sum - numEntitiesRemoved, maxFeasibleValue);
 
         sum += numEntitiesRemoved;
     }
@@ -250,6 +258,8 @@ void IndirectDrawerCuller::cull_entities(unsigned int meshId, unsigned int ssboI
 
     if (currentIndex < maxFeasibleValue - 1)
     {
-        m_dib_to_entity_data->shift_data_virtual_max(currentIndex + 1, currentIndex, maxFeasibleValue);
+        unsigned int* update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
+        util::shift_data_virtual_max(update_buf, currentIndex + 1, currentIndex, maxFeasibleValue);
+        // m_dib_to_entity_data->shift_data_virtual_max(currentIndex + 1, currentIndex, maxFeasibleValue);
     }
 }
