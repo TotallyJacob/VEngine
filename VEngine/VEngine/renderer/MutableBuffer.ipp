@@ -304,6 +304,7 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_sync_on_readbuf()
 /*
     FLAG STUFF
 */
+
 MUTABLE_BUFFER_TEMPLATE
 constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_storage_flags() const -> GLbitfield
 {
@@ -332,8 +333,17 @@ constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_map_flags() const ->
 }
 
 /*
-    DATA STUFF
+    DATA / MEM STUFF
 */
+
+MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_initial_data(CourierBuffer<DATA_TYPE>& buffer)
+{
+    for (int i = 0; i < num_buffers; i++)
+    {
+        set_persistent_map_data(buffer, i);
+    }
+}
 
 MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_initial_data(unsigned int indexToChange, DATA_TYPE valueToChangeTo)
@@ -365,6 +375,12 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::copy_previous_updatebuf_into_updat
     set_updatebuf_data(m_persistent_maps.data[m_previous_updatebuf_index], get_num_elements(), 0);
 }
 
+MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_updatebuf_data(CourierBuffer<DATA_TYPE>& buffer)
+{
+
+    set_persistent_map_data(buffer, m_updatebuf_index);
+}
 
 MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_updatebuf_data(DATA_TYPE* data, unsigned int numOfElements, unsigned int startPoint)
@@ -377,7 +393,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(DATA_TYPE* val
 {
     for (int i = 0; i < num_buffers; i++)
     {
-        util::persistent_map_fill(m_persistent_maps.data[i], value_to_fill, get_num_elements());
+        util::buf_fill(m_persistent_maps.data[i], value_to_fill, get_num_elements());
     }
 }
 
@@ -386,16 +402,31 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(DATA_TYPE* val
 */
 
 MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_persistent_map_data(CourierBuffer<DATA_TYPE>& buffer, const unsigned int index)
+{
+    assert(buffer.get_byte_array().get_num_elements_per_buf() == get_num_elements() &&
+           "CourierBuffer doesn't have the same number of elements as MutableBuffer.");
+
+    assert(index < num_buffers && "Cannot set persistent map data, for a buffer that doesn't exist.");
+
+    util::buf_memcpy(m_persistent_maps.data[index], buffer.get_data(), get_num_elements(), 0);
+}
+
+MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_persistent_map_data(const unsigned int index, DATA_TYPE* data, unsigned int numOfElements,
                                                                       unsigned int startPoint)
 {
-    util::persistent_map_memcpy(m_persistent_maps.data[index], data, numOfElements, startPoint);
+    assert(index < num_buffers && "Index is greater then the number of buffers");
+
+    util::buf_memcpy(m_persistent_maps.data[index], data, numOfElements, startPoint);
 }
 
 MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(const unsigned int index, DATA_TYPE* value_to_fill)
 {
-    util::persistent_map_fill(m_persistent_maps.data[index], value_to_fill, get_num_elements());
+    assert(index < num_buffers && "Index is greater then the number of buffers");
+
+    util::buf_fill(m_persistent_maps.data[index], value_to_fill, get_num_elements());
 }
 
 /*
@@ -423,12 +454,16 @@ auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_byte_array() -> ByteArray<DATA
 MUTABLE_BUFFER_TEMPLATE
 auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_updatebuf_persistent_map(const unsigned int index) -> DATA_TYPE*
 {
+    assert(index < get_num_elements() && "Index is greater then number of elements");
+
     return &m_persistent_maps.data[m_updatebuf_index][index];
 }
 
 MUTABLE_BUFFER_TEMPLATE
 auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_persistent_map(const unsigned int index) -> DATA_TYPE*
 {
+    assert(index < get_num_elements() * get_num_buffers() && "Index is greater then number of elements");
+
     return &m_persistent_maps.data[0][index];
 }
 

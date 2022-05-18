@@ -18,38 +18,38 @@ void IndirectDrawerCuller::add_entity(unsigned int meshId, unsigned int ssboId)
 
 void IndirectDrawerCuller::init_ssbo(ShaderStorageManager* shaderStorageManager)
 {
-    auto dib = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1);
+    auto dib = m_dib_courier->get_data(m_num_objects - 1);
     m_dib_to_entity_data = &shaderStorageManager->make_mutable_shader_storage<unsigned int, GL_SHADER_STORAGE_BUFFER, 3>(
         "drawStuff", dib->prim_count + dib->base_instance, SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC);
 }
 void IndirectDrawerCuller::set_ssbo(unsigned int meshId, unsigned int ssboId)
 {
     const unsigned int dibIndex = m_mesh_lod_to_dib_index.at(meshId);
-    const unsigned int index = m_mutable_dib->get_updatebuf_persistent_map(dibIndex)->base_instance + m_ssboId_to_instanceId.at(ssboId);
+    const unsigned int index = m_dib_courier->get_data(dibIndex)->base_instance + m_ssboId_to_instanceId.at(ssboId);
     m_dib_to_entity_data->set_initial_data(index, ssboId); // Special function
 }
 
 // Changing the draw indirect buffer
 void IndirectDrawerCuller::change_instance_count(unsigned int dibIndex, int byHowMuch)
 {
-    unsigned int& numInstances = m_mutable_dib->get_updatebuf_persistent_map(dibIndex)->prim_count;
+    unsigned int& numInstances = m_dib_courier->get_data(dibIndex)->prim_count;
     numInstances += byHowMuch;
 
     // Setting gl_BaseInstance
     for (int i = dibIndex + 1; i < m_num_objects; i++)
     {
-        m_mutable_dib->get_updatebuf_persistent_map(i)->base_instance += byHowMuch;
+        m_dib_courier->get_data(i)->base_instance += byHowMuch;
     }
 }
 void IndirectDrawerCuller::change_instance_count(unsigned int& _numInstances, unsigned int dibIndex, int byHowMuch)
 {
-    unsigned int& numInstances = m_mutable_dib->get_updatebuf_persistent_map(dibIndex)->prim_count;
+    unsigned int& numInstances = m_dib_courier->get_data(dibIndex)->prim_count;
     numInstances += byHowMuch;
 
     // Setting gl_BaseInstance
     for (int i = dibIndex + 1; i < m_num_objects; i++)
     {
-        m_mutable_dib->get_updatebuf_persistent_map(i)->base_instance += byHowMuch;
+        m_dib_courier->get_data(i)->base_instance += byHowMuch;
     }
 
     _numInstances = numInstances;
@@ -73,7 +73,7 @@ void IndirectDrawerCuller::uncull_entities_batched(const std::vector<unsigned in
         auto& ssboId = ssboIds.at(i);
 
         const unsigned int index = m_mesh_lod_to_dib_index.at(meshId);
-        const unsigned int numInstances = m_mutable_dib->get_updatebuf_persistent_map(index)->prim_count;
+        const unsigned int numInstances = m_dib_courier->get_data(index)->prim_count;
 
         unsigned int numEntitiesAdded = ordered_ssboIds.at(index).size();
         m_ssboId_to_instanceId.at(ssboId) = numInstances + numEntitiesAdded; // numInstnaces isnt an index but since we are adding to the
@@ -91,12 +91,12 @@ void IndirectDrawerCuller::uncull_entities_batched(const std::vector<unsigned in
     }
 
     unsigned int       sum = 0;
-    const auto         dib1 = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1);
+    const auto         dib1 = m_dib_courier->get_data(m_num_objects - 1);
     const unsigned int maxFeasibleValue = dib1->base_instance + dib1->prim_count;
     unsigned int*      update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
     for (int i = 0; i < m_num_objects - 1; i++)
     {
-        const auto         dib = m_mutable_dib->get_updatebuf_persistent_map(i);
+        const auto         dib = m_dib_courier->get_data(i);
         const unsigned int toCpyFrom = dib->prim_count + dib->base_instance;
         auto&              ordered_ssbos = ordered_ssboIds.at(i);
 
@@ -128,10 +128,10 @@ void IndirectDrawerCuller::uncull_entities(unsigned int meshId, unsigned int ssb
     // const auto& dib = m_mutable_dib->get_updatebuf_persistent_map();
 
     const unsigned int index = m_mesh_lod_to_dib_index.at(meshId);
-    const unsigned int gl_BaseInstance = m_mutable_dib->get_updatebuf_persistent_map(index)->base_instance;
+    const unsigned int gl_BaseInstance = m_dib_courier->get_data(index)->base_instance;
     // As this will increase due to changeInstanceCount down below
-    const unsigned int maxFeasibleValue = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1)->base_instance +
-                                          m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1)->prim_count + 1;
+    const unsigned int maxFeasibleValue =
+        m_dib_courier->get_data(m_num_objects - 1)->base_instance + m_dib_courier->get_data(m_num_objects - 1)->prim_count + 1;
 
     // Setting instance count
     unsigned int numInstances = 0;
@@ -156,8 +156,8 @@ void IndirectDrawerCuller::uncull_entities(unsigned int meshId, unsigned int ssb
 void IndirectDrawerCuller::cull_entities_batched(const std::vector<unsigned int>& meshIds, const std::vector<unsigned int>& ssboIds)
 {
     // const auto&        dib = m_mutable_dib->get_updatebuf_persistent_map();
-    const unsigned int maxFeasibleValue = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1)->base_instance +
-                                          m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1)->prim_count;
+    const unsigned int maxFeasibleValue =
+        m_dib_courier->get_data(m_num_objects - 1)->base_instance + m_dib_courier->get_data(m_num_objects - 1)->prim_count;
     unsigned int currentIndex = 0;
     unsigned int endIndex = 0;
 
@@ -165,7 +165,7 @@ void IndirectDrawerCuller::cull_entities_batched(const std::vector<unsigned int>
     std::vector<unsigned int> baseInstancePerDib, numInstancesPerDib;
     for (int i = 0; i < m_num_objects; i++)
     { // This is actually faster
-        const auto dib = m_mutable_dib->get_updatebuf_persistent_map(i);
+        const auto dib = m_dib_courier->get_data(i);
         numInstancesPerDib.push_back(dib->prim_count);
         baseInstancePerDib.push_back(dib->base_instance);
     }
@@ -207,7 +207,7 @@ void IndirectDrawerCuller::cull_entities_batched(const std::vector<unsigned int>
     unsigned int* update_buf = m_dib_to_entity_data->get_updatebuf_persistent_map(0);
     for (int i = 0; i < m_num_objects - 1; i++)
     {
-        const auto  dib = m_mutable_dib->get_updatebuf_persistent_map(i);
+        const auto  dib = m_dib_courier->get_data(i);
         const auto& numEntitiesRemoved = numEntitiesRemovedPerDib.at(i);
         const auto  toCpyFrom = dib->prim_count + dib->base_instance;
 
@@ -227,10 +227,10 @@ void IndirectDrawerCuller::cull_entities_batched(const std::vector<unsigned int>
 void IndirectDrawerCuller::cull_entities(unsigned int meshId, unsigned int ssboId)
 {
     // const auto&        dib = m_mutable_dib->get_updatebuf_persistent_map();
-    const auto         dib1 = m_mutable_dib->get_updatebuf_persistent_map(m_num_objects - 1);
+    const auto         dib1 = m_dib_courier->get_data(m_num_objects - 1);
     const unsigned int maxFeasibleValue = dib1->base_instance + dib1->prim_count;
     const unsigned int index = m_mesh_lod_to_dib_index.at(meshId);
-    const unsigned int gl_BaseInstance = m_mutable_dib->get_updatebuf_persistent_map(index)->base_instance;
+    const unsigned int gl_BaseInstance = m_dib_courier->get_data(index)->base_instance;
     const unsigned int gl_InstanceID = m_ssboId_to_instanceId.at(ssboId);
     unsigned int       currentIndex = gl_BaseInstance + gl_InstanceID;
 

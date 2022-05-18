@@ -45,13 +45,13 @@ DT inline static void insert_data(DATA_TYPE* initial, std::vector<DATA_TYPE>& to
                                   unsigned int numElementsToShift)
 {
     util::shift_data(initial, indexToInsertAt, indexToInsertAt + toInsert.size(), numElementsToShift);
-    util::persistent_map_memcpy(initial, &toInsert.front(), toInsert.size(), indexToInsertAt);
+    util::buf_memcpy(initial, &toInsert.front(), toInsert.size(), indexToInsertAt);
 }
 
 DT inline static void insert_data_no_shift(DATA_TYPE* initial, std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt)
 {
 
-    util::persistent_map_memcpy(initial, &toInsert.front(), toInsert.size(), indexToInsertAt);
+    util::buf_memcpy(initial, &toInsert.front(), toInsert.size(), indexToInsertAt);
 }
 
 DT inline static void insert_all_data(DATA_TYPE* initial, std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
@@ -64,7 +64,7 @@ DT inline static void insert_all_data(DATA_TYPE* initial, std::vector<DATA_TYPE>
 DT inline static void shift_data(DATA_TYPE* initial, unsigned int indexToShiftFrom, unsigned int indexToShiftTo,
                                  unsigned int numElementsToShift)
 {
-    util::persistent_map_memcpy(initial, &initial[indexToShiftFrom], numElementsToShift, indexToShiftTo);
+    util::buf_memcpy(initial, &initial[indexToShiftFrom], numElementsToShift, indexToShiftTo);
 }
 
 DT inline static void shift_data_virtual_max(DATA_TYPE* initial, unsigned int indexToShiftFrom, unsigned int indexToShiftTo,
@@ -77,13 +77,13 @@ DT inline static void shift_data_virtual_max(DATA_TYPE* initial, unsigned int in
     ACTUAL MEMCOPY STUFF
 */
 
-DT inline static void persistent_map_fill(DATA_TYPE* persistent_map, DATA_TYPE* data, unsigned int num_elements_in_array)
+DT inline static void buf_fill(DATA_TYPE* persistent_map, const DATA_TYPE* data, unsigned int num_elements_in_array)
 {
     std::fill_n(persistent_map, num_elements_in_array, *data);
 }
 
-DT inline static void persistent_map_memcpy(DATA_TYPE* persistentMap, DATA_TYPE* data, unsigned int numDataToCpy,
-                                            unsigned int persistentMapStartPoint)
+DT inline static void buf_memcpy(DATA_TYPE* persistentMap, const DATA_TYPE* data, unsigned int numDataToCpy,
+                                 unsigned int persistentMapStartPoint)
 {
     std::memcpy(&persistentMap[persistentMapStartPoint], data, numDataToCpy * sizeof(DATA_TYPE));
 }

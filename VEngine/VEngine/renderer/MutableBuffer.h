@@ -5,6 +5,7 @@
 #include "../ByteArray.h"
 #include "../Logger.hpp"
 #include "../Timer.h"
+#include "CourierBuffer.h"
 #include "IMutableBuffer.h"
 #include "PersistentMapBufferUtil.h"
 
@@ -77,6 +78,7 @@ class MutableBuffer : public IMutableBuffer
 
 
         // useful data functions
+        void        set_initial_data(CourierBuffer<DATA_TYPE>& buffer);
         void        set_initial_data(unsigned int indexToChange, DATA_TYPE valueToChangeTo);
         void        set_initial_data(DATA_TYPE* value);
         void        set_initial_data(DATA_TYPE* values, unsigned int numData);
@@ -84,6 +86,7 @@ class MutableBuffer : public IMutableBuffer
 
 
         // insert
+        void set_updatebuf_data(CourierBuffer<DATA_TYPE>& buffer);
         void set_updatebuf_data(DATA_TYPE* data, unsigned int numOfElements, unsigned int startPoint);
         void fill_persistent_map(DATA_TYPE* value_to_fill);
 
@@ -131,6 +134,9 @@ class MutableBuffer : public IMutableBuffer
 
         constexpr auto get_storage_flags() const -> GLbitfield;
         constexpr auto get_map_flags() const -> GLbitfield;
+
+        // data
+        void set_persistent_map_data(CourierBuffer<DATA_TYPE>& buffer, const unsigned int index);
 };
 
 } // namespace vengine

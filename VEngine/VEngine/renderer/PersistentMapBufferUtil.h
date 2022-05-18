@@ -41,9 +41,8 @@ DT inline static void shift_data_virtual_max(DATA_TYPE* initial, unsigned int in
                                              unsigned int virtualMaxNumberOfElements);
 
 // mem
-DT inline static void persistent_map_fill(DATA_TYPE* persistent_map, DATA_TYPE* data, unsigned int num_elements_in_array);
-DT inline static void persistent_map_memcpy(DATA_TYPE* persistentMap, DATA_TYPE* data, unsigned int numDataToCpy,
-                                            unsigned int persistentMapStartPoint);
+DT inline static void buf_fill(DATA_TYPE* persistent_map, const DATA_TYPE* data, unsigned int num_elements_in_buf);
+DT inline static void buf_memcpy(DATA_TYPE* persistentMap, const DATA_TYPE* data, unsigned int numDataToCpy, unsigned int startPoint);
 
 
 

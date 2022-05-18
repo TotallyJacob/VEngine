@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ByteArray.h"
+#include "PersistentMapBufferUtil.h"
 
 namespace vengine
 {
@@ -13,14 +14,20 @@ class CourierBuffer
 {
     public:
 
-        CourierBuffer(unsigned int num_elements);
+        CourierBuffer() = default;
+        CourierBuffer(unsigned int num_elements, size_t alignment_bytes);
+
+        void init(unsigned int num_elements, size_t alignment_bytes);
+        void set_data(const std::vector<DATA_TYPE>& data);
 
         auto get_byte_array() -> ByteArray<DATA_TYPE, 1>&;
-        auto get_buffer() -> DATA_TYPE*;
-        auto get_buf_length() -> unsigned int;
+        auto get_data(unsigned int index) -> DATA_TYPE*;
+        auto get_data() -> DATA_TYPE*;
+        auto get_num_elements() -> unsigned int;
 
     private:
 
+        std::vector<char>       m_data = {};
         ByteArray<DATA_TYPE, 1> m_byte_array = {};
 };
 

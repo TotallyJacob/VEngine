@@ -43,6 +43,11 @@ class MultiIndirectDrawer
             return m_meshIds;
         }
 
+        CourierBuffer<IndirectElements>* get_dib_courier()
+        {
+            return &m_dib_courier;
+        }
+
         MutableDib<3>* get_mutable_dib()
         {
             return &m_mutable_dib;
@@ -58,8 +63,9 @@ class MultiIndirectDrawer
         unsigned int m_shader_program = 0, m_num_objects = 0;
 
         // OpenGL buffers
-        MutableDib<3> m_mutable_dib = {};
-        unsigned int  m_vao = 0, m_vbo = 0, m_ebo = 0;
+        CourierBuffer<IndirectElements> m_dib_courier = {};
+        MutableDib<3>                   m_mutable_dib = {};
+        unsigned int                    m_vao = 0, m_vbo = 0, m_ebo = 0;
 
         // Test things
         void change_instance_count(unsigned int& _numInstances, unsigned int index, const int byHowMuch)

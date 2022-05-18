@@ -116,12 +116,16 @@ void MultiIndirectDrawer::init_buf_objects(std::vector<float>& vboData, std::vec
     glGenBuffers(1, &m_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 
-    m_mutable_dib.gen(drawIndirectArray.size(), vengine::SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC); // Auto binds/unbinds
+    // MutableDib and courier stuff
+    const auto& num_elements = drawIndirectArray.size();
+    m_mutable_dib.gen(num_elements, vengine::SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC);
+    m_dib_courier.init(num_elements, m_mutable_dib.get_alignment_per_buffer());
+    m_dib_courier.set_data(drawIndirectArray);
 
     // copy the data into buffers
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vboData.size(), &vboData.front(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * eboData.size(), &eboData.front(), GL_STATIC_DRAW);
-    m_mutable_dib.set_initial_data(&drawIndirectArray.front(), drawIndirectArray.size());
+    m_mutable_dib.set_initial_data(m_dib_courier);
 
     MeshManager::set_vertex_attrib_ptrs(meshType);
 
