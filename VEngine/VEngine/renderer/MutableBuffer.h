@@ -25,10 +25,20 @@ enum class SpecialSyncType : unsigned int
     TRIPPLE_BUFFER_SPECIAL_SYNC = 2
 };
 
-#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers>
-#define MUTABLE_BUFFER_TEMPLATE   template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers>
+struct MutableBufferFlags
+{
+        bool coherent_bit = true;
+        bool read_bit = false;
+        bool explicit_flush = false;
+};
 
-MUTABLE_BUFFER_TEMPLATE
+#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers, flags>
+#define MUTABLE_BUFFER_TEMPLATE                                                                                                            \
+    template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers, const MutableBufferFlags flags>
+
+
+template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers,
+          const MutableBufferFlags flags = MutableBufferFlags{}>
 class MutableBuffer : public IMutableBuffer
 {
 
@@ -91,6 +101,7 @@ class MutableBuffer : public IMutableBuffer
         // Getters
         auto get_readbuf_sync() -> GLsync&;
         auto get_updatebuf_sync() -> GLsync&;
+
         auto get_persistent_map(const unsigned int index) -> DATA_TYPE*;
         auto get_updatebuf_persistent_map(const unsigned int index) -> DATA_TYPE*;
         auto get_byte_array() -> ByteArray<DATA_TYPE, num_buffers>&;
@@ -104,17 +115,10 @@ class MutableBuffer : public IMutableBuffer
 
     protected:
 
-        // init functions
-        void init_sync_type(const SpecialSyncType specialSyncType);
-        void init_binding_data();
-
-        void update_readbuf_binding_data();
-
-        constexpr const static GLsync     m_invalid_sync_object = 0;
-        constexpr const static GLbitfield m_manual_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
-        constexpr const static GLbitfield m_persistent_map_flags = util::persistent_map_flags;
+        constexpr const static GLsync m_invalid_sync_object = 0;
 
         // gl arrays
+        ByteArray<DATA_TYPE, 1>           m_read_write_buffer = {};
         ByteArray<DATA_TYPE, num_buffers> m_persistent_maps = {};
         GLsync                            m_fences[num_buffers] = {0};
         BindingData                       m_binding_data[num_buffers] = {};
@@ -127,7 +131,18 @@ class MutableBuffer : public IMutableBuffer
 
         // Alignment
         inline static [[nodiscard]] auto calculate_alignment_per_buffer(const unsigned int num_elements) -> size_t;
+
+        // init functions
+        void init_sync_type(const SpecialSyncType specialSyncType);
+        void init_binding_data();
+        void update_readbuf_binding_data();
+
+        constexpr auto get_storage_flags() const -> GLbitfield;
+        constexpr auto get_map_flags() const -> GLbitfield;
 };
+
+
+;
 
 } // namespace vengine
 

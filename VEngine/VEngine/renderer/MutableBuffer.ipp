@@ -26,11 +26,13 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::gen(unsigned int num_elements, con
     size_t     alignment_bytes = calculate_alignment_per_buffer(num_elements);
     GLsizeiptr total_buffer_size = static_cast<GLsizeiptr>((sizeof_elements_per_buf + alignment_bytes) * num_buffers);
 
+    constexpr GLbitfield one = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT;
+
     // Buffer stuff
     glGenBuffers(1, &m_buffer_object);
     bind();
-    util::buffer_storage_with_alignment(buffer_type, total_buffer_size, nullptr);
-    char* m_persistent_map_ptr = util::map_buffer_range_with_alignment(buffer_type, 0, total_buffer_size);
+    util::buffer_storage_with_alignment(buffer_type, total_buffer_size, nullptr, get_storage_flags());
+    char* m_persistent_map_ptr = util::map_buffer_range_with_alignment(buffer_type, 0, total_buffer_size, get_map_flags());
     unbind();
     m_persistent_maps.init(m_persistent_map_ptr, num_elements, alignment_bytes);
 
@@ -165,7 +167,11 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::swap_buffers()
         m_readbuf_index = (m_readbuf_index + 1) % num_buffers;
 
         update_readbuf_binding_data();
-        // flush_previous_update_buf();
+    }
+
+    if constexpr (flags.explicit_flush)
+    {
+        flush_previous_update_buf();
     }
 
     if constexpr (delete_readbuf_sync)
@@ -293,6 +299,36 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_sync_on_readbuf()
     GLsync sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     glFlush();
     m_fences[m_readbuf_index] = sync;
+}
+
+/*
+    FLAG STUFF
+*/
+MUTABLE_BUFFER_TEMPLATE
+constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_storage_flags() const -> GLbitfield
+{
+    GLbitfield bf = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+
+    if (flags.coherent_bit)
+    {
+        bf |= GL_MAP_COHERENT_BIT;
+    }
+    if (flags.read_bit)
+    {
+        bf |= GL_MAP_READ_BIT;
+    }
+    return bf;
+}
+
+MUTABLE_BUFFER_TEMPLATE
+constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_map_flags() const -> GLbitfield
+{
+    GLbitfield bf = get_storage_flags();
+    if (flags.explicit_flush)
+    {
+        bf |= GL_MAP_FLUSH_EXPLICIT_BIT;
+    }
+    return bf;
 }
 
 /*
@@ -473,4 +509,7 @@ auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_num_elements() const -> const 
 {
     return m_persistent_maps.get_num_elements_per_buf();
 }
+
+
+
 }; // namespace vengine
