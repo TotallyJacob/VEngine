@@ -25,8 +25,9 @@ enum class SpecialSyncType : unsigned int
     TRIPPLE_BUFFER_SPECIAL_SYNC = 2
 };
 
-#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers>
-#define MUTABLE_BUFFER_TEMPLATE   template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers>
+#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers, thread_safe>
+#define MUTABLE_BUFFER_TEMPLATE                                                                                                            \
+    template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers, const bool thread_safe = false>
 
 MUTABLE_BUFFER_TEMPLATE
 class MutableBuffer : public IMutableBuffer
@@ -72,12 +73,12 @@ class MutableBuffer : public IMutableBuffer
 
 
         // insert
-        inline void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt, unsigned int numElementsToShift);
-        inline void insert_data_no_shift(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
-        inline void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
-        inline void insert_data_virtual_max(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
-                                            unsigned int virtualMaxNumberOfElements);
-        inline void shift_data(unsigned int indexToShiftFrom, unsigned int indexToShiftTo, unsigned int numElementsToShift);
+        void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt, unsigned int numElementsToShift);
+        void insert_data_no_shift(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
+        void insert_data(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt);
+        void insert_data_virtual_max(std::vector<DATA_TYPE>& toInsert, unsigned int indexToInsertAt,
+                                     unsigned int virtualMaxNumberOfElements);
+        void shift_data(unsigned int indexToShiftFrom, unsigned int indexToShiftTo, unsigned int numElementsToShift);
         void shift_data_virtual_max(unsigned int indexToShiftFrom, unsigned int indexToShiftTo, unsigned int virtualMaxNumberOfElements);
         void set_updatebuf_data(DATA_TYPE* data, unsigned int numOfElements, unsigned int startPoint);
         void fill_persistent_map(DATA_TYPE* value_to_fill);

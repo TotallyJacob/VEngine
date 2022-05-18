@@ -33,12 +33,18 @@ class SyncManager
     private:
 
         void init();
+        void thread_sync_handler(GLenum& result);
+        void thread_function(HDC hdc, HGLRC hglrc);
 
         std::unique_ptr<std::thread> m_thread;
-        std::mutex                   running_mutex{};
-        std::atomic<bool>            m_running = true;
-        std::mutex                   m_sync_mutex{};
-        std::vector<GLsync>          m_syncs{};
+
+        // running
+        std::mutex        running_mutex{};
+        std::atomic<bool> m_running = true;
+
+        // syncs
+        std::mutex          m_sync_mutex{};
+        std::vector<GLsync> m_syncs{};
 };
 
 }; // namespace vengine

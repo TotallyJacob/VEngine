@@ -45,7 +45,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::gen(unsigned int num_elements, con
 MUTABLE_BUFFER_TEMPLATE
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::init_sync_type(const SpecialSyncType specialSyncType)
 {
-    if (num_buffers > 1)
+    if constexpr (num_buffers > 1)
     {
         switch (specialSyncType)
         {
@@ -75,7 +75,7 @@ inline auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::calculate_alignment_per_buf
 {
     size_t alignment_per_buffer = 0;
 
-    if (num_buffers > 1)
+    if constexpr (num_buffers > 1)
     {
         // query the alignment
         GLint alignment = 0;
@@ -115,7 +115,7 @@ template <bool delete_readbuf_sync>
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::swap_buffers()
 {
     // Should remove by compiler
-    if (num_buffers > 1)
+    if constexpr (num_buffers > 1)
     {
 
         m_previous_updatebuf_index = m_updatebuf_index;
@@ -123,8 +123,10 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::swap_buffers()
         m_readbuf_index = (m_readbuf_index + 1) % num_buffers;
     }
 
-    if (delete_readbuf_sync)
+    if constexpr (delete_readbuf_sync)
+    {
         this->delete_readbuf_sync();
+    }
 }
 
 MUTABLE_BUFFER_TEMPLATE
@@ -154,7 +156,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::standard_wait_sync(const GLsync& s
 {
     // Timer init
     LARGE_INTEGER initial_time;
-    if (print_sync_time)
+    if constexpr (print_sync_time)
     {
         Timer timer;
         timer.currentTime(&initial_time);
@@ -190,7 +192,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::standard_wait_sync(const GLsync& s
     }
 
     // Time final
-    if (print_sync_time)
+    if constexpr (print_sync_time)
     {
         Timer  timer;
         double elapsed = 0;
