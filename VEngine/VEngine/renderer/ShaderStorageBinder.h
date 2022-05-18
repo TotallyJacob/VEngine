@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 
 #include "../Logger.hpp"
-#include "IMutableShaderStorage.h"
+#include "IMutableBuffer.h"
 #include "ShaderProgramManager.h"
 
 #include <assert.h>
@@ -21,20 +21,19 @@ class ShaderStorageBinder
         ShaderStorageBinder(const unsigned int max_ssbo_bindings, const unsigned int max_ubo_bindings,
                             const std::unordered_map<unsigned int, unsigned int> storageId_to_bufferId,
                             const std::unordered_map<std::string, unsigned int>  name_to_storageId,
-                            std::vector<std::unique_ptr<IMutableShaderStorage>>& mutable_storages,
-                            ShaderProgramManager&                                shader_program_manager);
+                            std::vector<std::unique_ptr<IMutableBuffer>>& mutable_storages, ShaderProgramManager& shader_program_manager);
         ~ShaderStorageBinder() = default;
 
         void add_shader_storage_binding_to_program(const unsigned int& storageId, const unsigned int& programId);
         void add_shader_storage(const unsigned int& storageId, const GLenum& target, const GLint& index, const GLint& buffer,
-                                IMutableShaderStorage& mutable_storage);
+                                IMutableBuffer& mutable_storage);
 
         void               bind_storages(const unsigned int& program);
         const unsigned int get_binding_point_offset(const GLenum& target) const;
 
     private:
 
-        std::vector<std::unique_ptr<IMutableShaderStorage>>* m_shader_storage_interfaces;
+        std::vector<std::unique_ptr<IMutableBuffer>>* m_shader_storage_interfaces;
 
         struct BindBufferRangeData
         {

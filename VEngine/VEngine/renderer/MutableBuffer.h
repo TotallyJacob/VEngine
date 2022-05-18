@@ -25,9 +25,8 @@ enum class SpecialSyncType : unsigned int
     TRIPPLE_BUFFER_SPECIAL_SYNC = 2
 };
 
-#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers, thread_safe>
-#define MUTABLE_BUFFER_TEMPLATE                                                                                                            \
-    template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers, const bool thread_safe = false>
+#define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers>
+#define MUTABLE_BUFFER_TEMPLATE   template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers>
 
 MUTABLE_BUFFER_TEMPLATE
 class MutableBuffer : public IMutableBuffer
@@ -43,7 +42,6 @@ class MutableBuffer : public IMutableBuffer
 
         // Init stuff
         void gen(unsigned int num_elements, const SpecialSyncType specialSyncType = SpecialSyncType::NORMAL_SYNC);
-        void init_sync_type(const SpecialSyncType specialSyncType);
 
         // Binding stuff
         template <bool delete_readbuf_sync>
@@ -51,6 +49,9 @@ class MutableBuffer : public IMutableBuffer
         inline void delete_buffers();
         inline void bind() const;
         inline void unbind() const;
+
+        // Buffer binding stuff
+        void flush_previous_update_buf();
 
         // Syncs
 
@@ -103,12 +104,20 @@ class MutableBuffer : public IMutableBuffer
 
     protected:
 
-        constexpr const static GLsync       m_invalid_sync_object = 0;
-        constexpr const static unsigned int m_persistent_map_flags = util::persistent_map_flags;
+        // init functions
+        void init_sync_type(const SpecialSyncType specialSyncType);
+        void init_binding_data();
+
+        void update_readbuf_binding_data();
+
+        constexpr const static GLsync     m_invalid_sync_object = 0;
+        constexpr const static GLbitfield m_manual_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
+        constexpr const static GLbitfield m_persistent_map_flags = util::persistent_map_flags;
 
         // gl arrays
         ByteArray<DATA_TYPE, num_buffers> m_persistent_maps = {};
         GLsync                            m_fences[num_buffers] = {0};
+        BindingData                       m_binding_data[num_buffers] = {};
         unsigned int                      m_buffer_object = 0;
 
         // member data to function

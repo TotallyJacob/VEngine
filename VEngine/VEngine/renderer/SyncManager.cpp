@@ -49,6 +49,8 @@ void SyncManager::thread_sync_handler(GLenum& result)
     for (auto& sync : m_syncs)
     {
 
+        Sleep(100);
+
         if (sync == invalid_sync)
         {
             continue;

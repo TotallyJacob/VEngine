@@ -46,7 +46,7 @@ class ShaderStorageManager
             m_shader_storage_binder->bind_storages(programId);
         }
 
-        const IMutableShaderStorage& get_mutable_shader_storage_interface(const unsigned int storageId) const;
+        const IMutableBuffer& get_mutable_shader_storage_interface(const unsigned int storageId) const;
 
         template <typename DATA_TYPE, const GLenum buffer_type, const unsigned int num_buffers>
         [[nodiscard]] MutableShaderStorage<DATA_TYPE, buffer_type, num_buffers>&
@@ -79,10 +79,10 @@ class ShaderStorageManager
     private:
 
         // Data
-        std::unique_ptr<ShaderStorageBinder>                m_shader_storage_binder;
-        std::vector<std::unique_ptr<IMutableShaderStorage>> m_shader_storages{};
-        std::unordered_map<unsigned int, unsigned int>      m_storageId_to_bufferId{};
-        std::unordered_map<std::string, unsigned int>       m_storage_name_to_storageId{};
+        std::unique_ptr<ShaderStorageBinder>           m_shader_storage_binder;
+        std::vector<std::unique_ptr<IMutableBuffer>>   m_shader_storages{};
+        std::unordered_map<unsigned int, unsigned int> m_storageId_to_bufferId{};
+        std::unordered_map<std::string, unsigned int>  m_storage_name_to_storageId{};
 
         // Query
         struct GPU_QUERY

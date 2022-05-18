@@ -35,7 +35,6 @@ class IndirectDrawerCuller
 
             // Doing everything elsed
             m_dib_to_entity_data->swap_buffers<true>();
-            m_dib_to_entity_data->update_readbuf_binding_data();
 
             m_dib_to_entity_data->copy_previous_updatebuf_into_updatebuf();
             m_dib_to_entity_data->delete_readbuf_sync();

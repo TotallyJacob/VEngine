@@ -7,7 +7,8 @@
 namespace vengine::util
 {
 
-constexpr static unsigned int persistent_map_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+constexpr static GLbitfield persistent_map_none_coherent_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+constexpr static GLbitfield persistent_map_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
 template <typename T>
 inline static void buffer_storage(const GLenum target, unsigned int num_elements, const void* initialData = nullptr,

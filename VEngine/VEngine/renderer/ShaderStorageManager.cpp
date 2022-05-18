@@ -49,7 +49,7 @@ void ShaderStorageManager::query_gpu_storage_specs()
 }
 
 // Getters
-const IMutableShaderStorage& ShaderStorageManager::get_mutable_shader_storage_interface(const unsigned int storageId) const
+const IMutableBuffer& ShaderStorageManager::get_mutable_shader_storage_interface(const unsigned int storageId) const
 {
     assert(m_shader_storages.size() > storageId && "Error, no shader storage at storageId index.");
 

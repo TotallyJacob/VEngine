@@ -5,7 +5,7 @@ using namespace vengine;
 ShaderStorageBinder::ShaderStorageBinder(const unsigned int max_ssbo_bindings, const unsigned int max_ubo_bindings,
                                          const std::unordered_map<unsigned int, unsigned int> storageId_to_bufferId,
                                          const std::unordered_map<std::string, unsigned int>  name_to_storageId,
-                                         std::vector<std::unique_ptr<IMutableShaderStorage>>& mutable_storages,
+                                         std::vector<std::unique_ptr<IMutableBuffer>>&        mutable_storages,
                                          ShaderProgramManager&                                shader_program_manager)
 {
 
@@ -78,9 +78,9 @@ void ShaderStorageBinder::add_shader_storage_binding_to_program(const unsigned i
     }
 }
 void ShaderStorageBinder::add_shader_storage(const unsigned int& storageId, const GLenum& target, const GLint& index, const GLint& buffer,
-                                             IMutableShaderStorage& mutable_storage)
+                                             IMutableBuffer& mutable_storage)
 {
-    m_bbr_changed_at_index.push_back(&mutable_storage.binding_data_changed());
+    m_bbr_changed_at_index.push_back(&mutable_storage.m_readbuf_binding_data->binding_data_changed);
     m_storageId_to_bbr_index.emplace(storageId, m_bbr_data.size());
     set_bind_buffer_range_data(target, index, buffer);
 }
@@ -96,7 +96,8 @@ void ShaderStorageBinder::bind_storages(const unsigned int& program)
 
         if (bbr_data_changed == true || binding_point_to_bbr != bbr_index)
         {
-            m_shader_storage_interfaces->at(storageId)->bind_readbuf_range(bbr_data.target, bbr_data.index, bbr_data.buffer);
+            const auto& bd = m_shader_storage_interfaces->at(storageId);
+            glBindBufferRange(bbr_data.target, bbr_data.index, bbr_data.buffer, bd->m_readbuf_binding_data->offset, bd->m_buffer_size);
 
             binding_point_to_bbr = bbr_index;
             bbr_data_changed = false;

@@ -16,6 +16,11 @@ namespace vengine
 {
 
 
+/*
+ *
+ * HUGE PERF PROBLEM WITH LOCKING WITH MAIN THREAD DUE TO add_sync();
+ *
+ */
 class SyncManager
 {
 

@@ -29,7 +29,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::gen(unsigned int num_elements, con
     // Buffer stuff
     glGenBuffers(1, &m_buffer_object);
     bind();
-    util::buffer_storage_with_alignment(buffer_type, total_buffer_size);
+    util::buffer_storage_with_alignment(buffer_type, total_buffer_size, nullptr);
     char* m_persistent_map_ptr = util::map_buffer_range_with_alignment(buffer_type, 0, total_buffer_size);
     unbind();
     m_persistent_maps.init(m_persistent_map_ptr, num_elements, alignment_bytes);
@@ -40,6 +40,8 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::gen(unsigned int num_elements, con
     {
         m_fences[i] = m_invalid_sync_object; // Thereby glDeleteSync silently ignroes it.
     }
+
+    init_binding_data();
 }
 
 MUTABLE_BUFFER_TEMPLATE
@@ -70,8 +72,9 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::init_sync_type(const SpecialSyncTy
     }
 }
 
-MUTABLE_BUFFER_TEMPLATE
-inline auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::calculate_alignment_per_buffer(const unsigned int num_elements) -> size_t
+
+MUTABLE_BUFFER_TEMPLATE inline auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::calculate_alignment_per_buffer(const unsigned int num_elements)
+    -> size_t
 {
     size_t alignment_per_buffer = 0;
 
@@ -107,6 +110,46 @@ inline auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::calculate_alignment_per_buf
 }
 
 /*
+    BUFFER BINDING STUFF
+*/
+
+MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::init_binding_data()
+{
+    m_buffer_size = get_sizeof_elements_per_buf();
+
+    for (unsigned int i = 0; i < num_buffers; i++)
+    {
+        BindingData& bbd = m_binding_data[i];
+
+        bbd.binding_data_changed = true;
+        bbd.offset = (get_alignment_per_buffer() + get_sizeof_elements_per_buf()) * i;
+    }
+
+    update_readbuf_binding_data();
+}
+
+MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::update_readbuf_binding_data()
+{
+    m_readbuf_binding_data = &m_binding_data[m_readbuf_index];
+}
+
+
+MUTABLE_BUFFER_TEMPLATE
+void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::flush_previous_update_buf()
+{
+    const BindingData bbd = m_binding_data[m_previous_updatebuf_index];
+
+    bind();
+
+    glFlushMappedBufferRange(buffer_type, bbd.offset, m_buffer_size);
+
+    unbind();
+}
+
+
+/*
     BINDING / BUFFER STUFF
 */
 
@@ -114,13 +157,15 @@ MUTABLE_BUFFER_TEMPLATE
 template <bool delete_readbuf_sync>
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::swap_buffers()
 {
-    // Should remove by compiler
     if constexpr (num_buffers > 1)
     {
-
+        // Update index
         m_previous_updatebuf_index = m_updatebuf_index;
         m_updatebuf_index = (m_updatebuf_index + 1) % num_buffers;
         m_readbuf_index = (m_readbuf_index + 1) % num_buffers;
+
+        update_readbuf_binding_data();
+        // flush_previous_update_buf();
     }
 
     if constexpr (delete_readbuf_sync)

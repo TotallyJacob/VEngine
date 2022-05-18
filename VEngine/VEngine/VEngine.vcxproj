@@ -165,7 +165,6 @@
     <ClInclude Include="ByteArray.h" />
     <ClInclude Include="ByteArray.ipp" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="renderer\IMutableShaderStorage.h" />
     <ClInclude Include="renderer\IMutableBuffer.h" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="ecs\ComponentArray.h" />
