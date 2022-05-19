@@ -306,15 +306,15 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_sync_on_readbuf()
 */
 
 MUTABLE_BUFFER_TEMPLATE
-constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_storage_flags() const -> GLbitfield
+constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_storage_flags() const -> const GLbitfield
 {
     GLbitfield bf = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
 
-    if (flags.coherent_bit)
+    if constexpr (flags.coherent_bit)
     {
         bf |= GL_MAP_COHERENT_BIT;
     }
-    if (flags.read_bit)
+    if constexpr (flags.read_bit)
     {
         bf |= GL_MAP_READ_BIT;
     }
@@ -322,10 +322,11 @@ constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_storage_flags() cons
 }
 
 MUTABLE_BUFFER_TEMPLATE
-constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_map_flags() const -> GLbitfield
+constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_map_flags() const -> const GLbitfield
 {
     GLbitfield bf = get_storage_flags();
-    if (flags.explicit_flush)
+
+    if constexpr (flags.explicit_flush)
     {
         bf |= GL_MAP_FLUSH_EXPLICIT_BIT;
     }
