@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <cmath>
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 /* TODO: not swap buffers un-nessesarily*/
@@ -30,7 +31,7 @@ struct MutableBufferFlags
 {
         bool coherent_bit = true;
         bool read_bit = false;
-        bool explicit_flush = true;
+        bool explicit_flush = false;
 };
 
 #define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers, flags>

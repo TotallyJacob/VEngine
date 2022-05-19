@@ -394,7 +394,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(DATA_TYPE* val
 {
     for (int i = 0; i < num_buffers; i++)
     {
-        util::buf_fill(m_persistent_maps.data[i], value_to_fill, get_num_elements());
+        fill_persistent_map(i, value_to_fill);
     }
 }
 
