@@ -333,6 +333,31 @@ constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_map_flags() const ->
     return bf;
 }
 
+MUTABLE_BUFFER_TEMPLATE
+constexpr auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_mem_barrier_flags() const -> const GLbitfield
+{
+    switch (buffer_type)
+    {
+        case GL_SHADER_STORAGE_BUFFER:
+            return GL_SHADER_STORAGE_BARRIER_BIT;
+
+        case GL_UNIFORM_BUFFER:
+            return GL_UNIFORM_BARRIER_BIT;
+
+        case GL_DRAW_INDIRECT_BUFFER:
+            return GL_COMMAND_BARRIER_BIT;
+
+        case GL_ARRAY_BUFFER:
+            return GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT;
+
+        case GL_ELEMENT_ARRAY_BUFFER:
+            return GL_ELEMENT_ARRAY_BARRIER_BIT;
+
+        default:
+            return GL_ALL_BARRIER_BITS;
+    }
+}
+
 /*
     DATA / MEM STUFF
 */
@@ -410,6 +435,8 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_persistent_map_data(CourierBuf
 
     assert(index < num_buffers && "Cannot set persistent map data, for a buffer that doesn't exist.");
 
+    apply_mem_barrier_if_needed();
+
     util::buf_memcpy(m_persistent_maps.data[index], buffer.get_data(), get_num_elements(), 0);
 }
 
@@ -419,6 +446,8 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::set_persistent_map_data(const unsi
 {
     assert(index < num_buffers && "Index is greater then the number of buffers");
 
+    apply_mem_barrier_if_needed();
+
     util::buf_memcpy(m_persistent_maps.data[index], data, numOfElements, startPoint);
 }
 
@@ -427,7 +456,18 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::fill_persistent_map(const unsigned
 {
     assert(index < num_buffers && "Index is greater then the number of buffers");
 
+    apply_mem_barrier_if_needed();
+
     util::buf_fill(m_persistent_maps.data[index], value_to_fill, get_num_elements());
+}
+
+MUTABLE_BUFFER_TEMPLATE
+inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::apply_mem_barrier_if_needed()
+{
+    if constexpr (flags.explicit_flush && !flags.coherent_bit)
+    {
+        glMemoryBarrier(get_mem_barrier_flags());
+    }
 }
 
 /*

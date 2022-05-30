@@ -29,9 +29,9 @@ enum class SpecialSyncType : unsigned int
 
 struct MutableBufferFlags
 {
-        bool coherent_bit = true;
+        bool coherent_bit = false;
         bool read_bit = false;
-        bool explicit_flush = false;
+        bool explicit_flush = true;
 };
 
 #define MUTABLE_BUFFER_IDENTIFIER <DATA_TYPE, buffer_type, num_buffers, flags>
@@ -133,11 +133,14 @@ class MutableBuffer : public IMutableBuffer
         void init_binding_data();
         void update_readbuf_binding_data();
 
+        // flags
         constexpr auto get_storage_flags() const -> const GLbitfield;
         constexpr auto get_map_flags() const -> const GLbitfield;
+        constexpr auto get_mem_barrier_flags() const -> const GLbitfield;
 
         // data
-        void set_persistent_map_data(CourierBuffer<DATA_TYPE>& buffer, const unsigned int index);
+        inline void apply_mem_barrier_if_needed();
+        void        set_persistent_map_data(CourierBuffer<DATA_TYPE>& buffer, const unsigned int index);
 };
 
 } // namespace vengine

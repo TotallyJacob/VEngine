@@ -37,9 +37,6 @@
     <Filter Include="Header Files\renderer\buffers\objects">
       <UniqueIdentifier>{f07daa66-c54d-4e22-88fc-a6fd25ec4d90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\renderer\buffers\objects">
-      <UniqueIdentifier>{f0eed979-ed02-48fd-99f2-b3aad8812ff1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\renderer\mesh">
       <UniqueIdentifier>{64393b32-d3c2-4707-af33-5037b26409b9}</UniqueIdentifier>
     </Filter>
@@ -120,9 +117,6 @@
     </Filter>
     <Filter Include="Source Files\concurrency">
       <UniqueIdentifier>{1b3da99c-ded2-4c32-8b6f-d665249d7e37}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\renderer\buffers\shader storage">
-      <UniqueIdentifier>{f6e1290d-7980-4c22-9b0a-849419b9d6b2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\renderer\buffers\sync">
       <UniqueIdentifier>{d3c80262-8e49-4476-a062-56a3852610fd}</UniqueIdentifier>
@@ -258,9 +252,6 @@
     <ClInclude Include="assert.hpp">
       <Filter>Header Files\logging</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\MutableShaderStorage.h">
-      <Filter>Header Files\renderer\buffers\shader storage</Filter>
-    </ClInclude>
     <ClInclude Include="renderer\SyncManager.h">
       <Filter>Header Files\renderer\buffers\sync</Filter>
     </ClInclude>
@@ -272,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="renderer\PersistentMapBufferUtil.ipp">
       <Filter>Source Files\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\MutableShaderStorage.h">
+      <Filter>Header Files\renderer\buffers\objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -286,12 +280,6 @@
     </ClCompile>
     <ClCompile Include="input\MouseInputManager.cpp">
       <Filter>Source Files\input</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer\MutableVbo.cpp">
-      <Filter>Source Files\renderer\buffers\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer\MutableEbo.cpp">
-      <Filter>Source Files\renderer\buffers\objects</Filter>
     </ClCompile>
     <ClCompile Include="renderer\TextureManager.cpp">
       <Filter>Source Files\renderer\textures</Filter>

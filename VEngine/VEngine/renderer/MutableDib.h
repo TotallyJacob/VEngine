@@ -14,21 +14,20 @@ struct IndirectElements
         unsigned int base_instance = 0; // Used for spliting instances between draw calls apparently.
 };
 
-constexpr static const MutableBufferFlags mdibf = {true, false, false};
 
-template <const unsigned int num_buffers>
-class MutableDib : public MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, mdibf>
+template <const unsigned int num_buffers, const MutableBufferFlags flags = MutableBufferFlags{}>
+class MutableDib : public MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, flags>
 {
     public:
 
         MutableDib() = default;
 
-        MutableDib(unsigned int num_elements, bool gen)
-            : MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, mdibf>(num_elements, gen,
-                                                                                           SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC)
+        MutableDib(unsigned int num_elements, bool gen, SpecialSyncType sync_type = SpecialSyncType::TRIPPLE_BUFFER_SPECIAL_SYNC)
+            : MutableBuffer<IndirectElements, GL_DRAW_INDIRECT_BUFFER, num_buffers, flags>(num_elements, gen, sync_type)
         {
         }
 
+        // specified in glDraw...Indirect -> const void* indirect -> to apply this offset
         const GLintptr get_indirect_offset() const
         {
             return this->m_readbuf_binding_data->offset;
