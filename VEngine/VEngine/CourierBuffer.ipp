@@ -18,6 +18,12 @@ void CourierBuffer COURIER_BUFFER_IDENTIFIER::init(unsigned int num_elements, si
 }
 
 COURIER_BUFFER_TEMPLATE
+void CourierBuffer COURIER_BUFFER_IDENTIFIER::set_data(DATA_TYPE* data, unsigned int num_elements)
+{
+    util::buf_memcpy(get_data(), data, num_elements, 0);
+}
+
+COURIER_BUFFER_TEMPLATE
 void CourierBuffer COURIER_BUFFER_IDENTIFIER::set_data(const std::vector<DATA_TYPE>& data)
 {
     util::buf_memcpy(get_data(), &data.front(), data.size(), 0);

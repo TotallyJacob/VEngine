@@ -2,9 +2,19 @@
 
 using namespace vengine;
 
-SyncManager::SyncManager()
+SyncManager::SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
 {
-    init();
+    init(num_sync_queues, pre_allocated_sync_queue_size);
+}
+
+void SyncManager::init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
+{
+    m_sync_queue.init(num_sync_queues, pre_allocated_sync_queue_size);
+
+    HDC   hdc = wglGetCurrentDC();
+    HGLRC hglrc = wglGetCurrentContext();
+
+    m_thread = std::make_unique<std::thread>(&SyncManager::thread_function, this, hdc, hglrc);
 }
 
 SyncManager::~SyncManager()
@@ -14,21 +24,12 @@ SyncManager::~SyncManager()
 
 void SyncManager::add_sync(const GLsync sync)
 {
-    if (m_running)
-    {
-        std::scoped_lock<std::mutex> sl(m_sync_mutex);
-        m_syncs.push_back(sync);
-    }
-    else
-    {
-        VE_LOG_WARNING("Warning, trying to use sync manager when stop() has been called.");
-    }
+    m_sync_queue.add_sync(sync);
 }
 
 void SyncManager::stop()
 {
     m_running = false;
-    std::scoped_lock<std::mutex> sl(m_sync_mutex); // Accuire the mutex
 
     if (m_thread->joinable())
     {
@@ -43,20 +44,20 @@ void SyncManager::stop()
 
 void SyncManager::thread_sync_handler(GLenum& result)
 {
-    std::scoped_lock<std::mutex> sl(m_sync_mutex);
-    static const GLsync          invalid_sync = 0;
+    m_sync_queue.insert_published_syncs_into(m_syncs);
+
+    static const GLsync invalid_sync = 0;
 
     for (auto& sync : m_syncs)
     {
-
-        Sleep(100);
+        // Sleep(0);
 
         if (sync == invalid_sync)
         {
             continue;
         }
 
-        result = glClientWaitSync(sync, 0, 100);
+        result = glClientWaitSync(sync, 0, 0);
 
         bool con = false;
         switch (result)
@@ -76,7 +77,7 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
         if (con)
         {
-            // VE_LOG_WARNING("con changed, so removing sync: " << sync);
+            VE_LOG_WARNING("con changed, so removing sync: " << sync);
             sync = invalid_sync;
         }
     }
@@ -96,6 +97,7 @@ void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
     wglMakeCurrent(hdc, hglrc_new);
     VE_LOG("Sync manager, made context.");
 
+
     GLenum result;
     while (m_running)
     {
@@ -107,12 +109,4 @@ void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
     VE_LOG("Sync manager, deleting context.");
     wglDeleteContext(hglrc_new);
     VE_LOG("Stopping running sync manager thread.");
-}
-
-void SyncManager::init()
-{
-    HDC   hdc = wglGetCurrentDC();
-    HGLRC hglrc = wglGetCurrentContext();
-
-    m_thread = std::make_unique<std::thread>(&SyncManager::thread_function, this, hdc, hglrc);
 }

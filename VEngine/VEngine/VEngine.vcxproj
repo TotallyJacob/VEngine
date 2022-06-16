@@ -166,8 +166,8 @@
     <ClInclude Include="ByteArray.ipp" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="renderer\PersistentMapBufferUtil.ipp" />
-    <ClInclude Include="renderer\CourierBuffer.ipp" />
-    <ClInclude Include="renderer\CourierBuffer.h" />
+    <ClInclude Include="CourierBuffer.ipp" />
+    <ClInclude Include="CourierBuffer.h" />
     <ClInclude Include="renderer\IMutableBuffer.h" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="ecs\ComponentArray.h" />
@@ -203,6 +203,7 @@
     <ClInclude Include="renderer\ShaderStorageBinder.h" />
     <ClInclude Include="renderer\ShaderStorageManager.ipp" />
     <ClInclude Include="renderer\SyncManager.h" />
+    <ClInclude Include="renderer\SyncQueue.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="renderer\MutableShaderStorage.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="renderer\TextureManager.cpp" />
     <ClCompile Include="renderer\ShaderStorageBinder.cpp" />
     <ClCompile Include="renderer\SyncManager.cpp" />
+    <ClCompile Include="renderer\SyncQueue.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="VEngine.cpp" />

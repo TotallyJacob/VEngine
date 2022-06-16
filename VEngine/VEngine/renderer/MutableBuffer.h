@@ -3,9 +3,9 @@
 #include "GL/glew.h"
 
 #include "../ByteArray.h"
+#include "../CourierBuffer.h"
 #include "../Logger.hpp"
 #include "../Timer.h"
-#include "CourierBuffer.h"
 #include "IMutableBuffer.h"
 #include "PersistentMapBufferUtil.h"
 

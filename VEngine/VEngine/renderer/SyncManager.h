@@ -6,11 +6,13 @@
 #include <windows.h>
 
 #include <iostream>
+#include <map>
 #include <mutex>
 #include <semaphore>
 #include <thread>
 
 #include "../Logger.hpp"
+#include "SyncQueue.h"
 
 namespace vengine
 {
@@ -26,18 +28,23 @@ class SyncManager
 
     public:
 
-        SyncManager();
+        SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size);
         ~SyncManager();
 
         SyncManager(const SyncManager&) = delete;
 
         void add_sync(const GLsync sync);
+        void publish_added_syncs()
+        {
+            m_sync_queue.publish_queue();
+        }
+
 
         void stop();
 
     private:
 
-        void init();
+        void init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size);
         void thread_sync_handler(GLenum& result);
         void thread_function(HDC hdc, HGLRC hglrc);
 
@@ -48,8 +55,8 @@ class SyncManager
         std::atomic<bool> m_running = true;
 
         // syncs
-        std::mutex          m_sync_mutex{};
         std::vector<GLsync> m_syncs{};
+        SyncQueue           m_sync_queue;
 };
 
 }; // namespace vengine
