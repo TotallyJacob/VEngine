@@ -48,6 +48,8 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
     static const GLsync invalid_sync = 0;
 
+    Sleep(0.02);
+
     for (auto& sync : m_syncs)
     {
         // Sleep(0);
@@ -77,7 +79,7 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
         if (con)
         {
-            VE_LOG_WARNING("con changed, so removing sync: " << sync);
+            // VE_LOG_WARNING("con changed, so removing sync: " << sync);
             sync = invalid_sync;
         }
     }
