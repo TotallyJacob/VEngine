@@ -10,6 +10,7 @@ SyncManager::SyncManager(unsigned int num_sync_queues, unsigned int pre_allocate
 void SyncManager::init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
 {
     m_sync_queue.init(num_sync_queues, pre_allocated_sync_queue_size);
+    m_sync_queue.make_publisher_thread();
 
     HDC   hdc = wglGetCurrentDC();
     HGLRC hglrc = wglGetCurrentContext();
@@ -48,11 +49,10 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
     static const GLsync invalid_sync = 0;
 
-    Sleep(0.02);
+    std::this_thread::sleep_for(std::chrono::microseconds(10));
 
     for (auto& sync : m_syncs)
     {
-        // Sleep(0);
 
         if (sync == invalid_sync)
         {
@@ -79,7 +79,7 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
         if (con)
         {
-            // VE_LOG_WARNING("con changed, so removing sync: " << sync);
+            VE_LOG_WARNING("con changed, so removing sync: " << sync);
             sync = invalid_sync;
         }
     }
@@ -99,6 +99,7 @@ void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
     wglMakeCurrent(hdc, hglrc_new);
     VE_LOG("Sync manager, made context.");
 
+    m_sync_queue.make_reader_thread();
 
     GLenum result;
     while (m_running)

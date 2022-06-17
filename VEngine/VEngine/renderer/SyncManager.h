@@ -38,6 +38,10 @@ class SyncManager
         {
             m_sync_queue.publish_queue();
         }
+        void make_publisher_thread()
+        {
+            m_sync_queue.make_publisher_thread();
+        }
 
 
         void stop();

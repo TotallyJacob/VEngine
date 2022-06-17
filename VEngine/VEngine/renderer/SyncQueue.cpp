@@ -12,9 +12,17 @@ void SyncQueue::init(const unsigned int num_queues, const unsigned int approxima
 {
     assert(num_queues > 2 && "most be atleast 3 queues to work.");
 
-    VE_LOG("SyncQueue atomics, lock free?");
-    VE_LOG(lock_free_string("is m_last_read_queue lock free? ", m_last_read_queue));
-    VE_LOG(lock_free_string("is m_sync_queue_pos lock free? ", m_sync_queue_pos));
+    SYNC_QUEUE_MUTEX_DO(                                                                                    //
+        if (m_reader_thread_exists || m_publisher_thread_exists) {                                          //
+            VE_LOG_ERROR("Cannot init SyncQueue after defining a publisher or reader thread.");             //
+            assert(false && "Bad Behaviour; init SyncQueue after defining a publisher or reader thread. "); //
+            return;                                                                                         //
+        }
+
+        VE_LOG("SyncQueue atomics, lock free?");                                         //
+        VE_LOG(lock_free_string("is m_last_read_queue lock free? ", m_last_read_queue)); //
+        VE_LOG(lock_free_string("is m_sync_queue_pos lock free? ", m_sync_queue_pos));   //
+    );
 
     m_pre_allocated_num_queue_elements = approximate_num_elements_per_queue;
     m_num_queues = num_queues;
@@ -28,10 +36,14 @@ void SyncQueue::init(const unsigned int num_queues, const unsigned int approxima
     }
 }
 
-// queue
-
 void SyncQueue::publish_queue()
 {
+
+    if (!publisher_try_lock())
+    {
+        return;
+    }
+
     // Maybe add mutex
     unsigned int current_queue_pos = m_sync_queue_pos;
     unsigned int new_queue_pos = (current_queue_pos + 1) % m_num_queues;
@@ -50,6 +62,12 @@ void SyncQueue::add_sync(const GLsync sync)
 
 void SyncQueue::insert_published_syncs_into(std::vector<GLsync>& to_insert_into)
 {
+
+    if (!reader_try_lock())
+    {
+        return;
+    }
+
     unsigned int queue_increment = m_last_read_queue;
     unsigned int sync_queue_pos = m_sync_queue_pos;
 
@@ -101,6 +119,11 @@ auto SyncQueue::pre_allocated_num_queue_elements() -> unsigned int
 
 void SyncQueue::add_sync_to_queue(const GLsync sync, const unsigned int queue_pos)
 {
+    if (!publisher_try_lock())
+    {
+        return;
+    }
+
     assert(queue_pos < m_num_queues && "queue_pos too large.");
 
     auto& queue = m_sync_queue.at(queue_pos);
@@ -127,3 +150,89 @@ auto SyncQueue::lock_free_string(std::string initial_comment, std::atomic<unsign
 
     return initial_comment;
 }
+
+void SyncQueue::make_publisher_thread()
+{
+    SYNC_QUEUE_MUTEX_DO(
+
+        if (!m_publisher_mutex.try_lock())                                                      //
+        {                                                                                       //
+            VE_LOG_ERROR("cannot make publisher thread, another thread is already publisher."); //
+            assert(false && "Bad behaviour, only one thread can call this.");                   //
+        }                                                                                       //
+        else                                                                                    //
+        {                                                                                       //
+            VE_LOG("SyncQueue, defined a publisher thread");                                    //
+            m_publisher_thread_exists = true;                                                   //
+        }                                                                                       //
+
+    );
+}
+void SyncQueue::make_reader_thread()
+{
+    SYNC_QUEUE_MUTEX_DO(
+
+        if (!m_reader_mutex.try_lock())                                                   //
+        {                                                                                 //
+            VE_LOG_ERROR("cannot make reader thread, another thread is already reader."); //
+            assert(false && "Bad behaviour, only one thread can call this.");             //
+        }                                                                                 //
+        else                                                                              //
+        {                                                                                 //
+            VE_LOG("SyncQueue, defined a reader thread.");                                //
+            m_reader_thread_exists = true;                                                //
+        }                                                                                 //
+    );
+}
+
+auto SyncQueue::publisher_try_lock() -> bool
+{
+    SYNC_QUEUE_MUTEX_DO(                                                                                //
+        if (!m_publisher_thread_exists)                                                                 //
+        {                                                                                               //
+            VE_LOG_ERROR("no publisher thread defined");                                                //
+            assert(false && "Bad behaviour, must define a publisher thread -> make_publisher_thread."); //
+            return false;                                                                               //
+        }                                                                                               //
+
+        std::unique_lock<std::recursive_mutex>       //
+            ul(m_publisher_mutex, std::try_to_lock); //
+
+        if (ul.owns_lock()) //
+        {                   //
+            return true;    //
+        }                   //
+
+        VE_LOG_ERROR("Is not publisher thread, cannot call publish_queue.");                             //
+        assert(false && "Bad behaviour, only publisher thread can do this. See make_publisher_thread."); //
+        return false;                                                                                    //
+    );
+    return true;
+}
+
+auto SyncQueue::reader_try_lock() -> bool
+{
+    SYNC_QUEUE_MUTEX_DO(                                                                          //
+        if (!m_reader_thread_exists)                                                              //
+        {                                                                                         //
+            VE_LOG_ERROR("no reader thread defined");                                             //
+            assert(false && "Bad behaviour, must define a reader thread -> make_reader_thread."); //
+            return false;                                                                         //
+        }                                                                                         //
+
+        std::unique_lock<std::recursive_mutex>    //
+            ul(m_reader_mutex, std::try_to_lock); //
+
+        if (ul.owns_lock()) //
+        {                   //
+            return true;    //
+        }                   //
+
+        VE_LOG_ERROR("Is not reader thread, cannot call insert_published_queue.");                 //
+        assert(false && "Bad behaviour, only reader thread can do this. See make_reader_thread."); //
+        return false;                                                                              //
+    );
+    return true;
+}
+
+#undef SYNC_QUEUE_MUTEX_DO
