@@ -6,72 +6,61 @@
 #include <windows.h>
 
 #include <array>
+#include <assert.h>
 #include <iostream>
 #include <mutex>
 #include <thread>
 
 #include "../Logger.hpp"
-#include "SyncQueue.h"
+#include "../ThreadLicense.h"
+#include "SyncInserter.h"
 
 namespace vengine
 {
 
 
-#define SYNC_MANAGER_IDENTIFIER <num_mutable_buffers>
-#define SYNC_MANAGER_TEMPLATE   template <unsigned int num_mutable_buffers>
+#define SYNC_MANAGER_IDENTIFIER <num_mutable_buffers, license_active>
+#define SYNC_MANAGER_TEMPLATE   template <unsigned int num_mutable_buffers, const bool license_active>
 
-SYNC_MANAGER_TEMPLATE
+template <unsigned int num_mutable_buffers, const bool license_active = false>
 class SyncManager
 {
 
     public:
 
-        SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size);
+        SyncManager();
         ~SyncManager();
+
+        void init();
 
         SyncManager(const SyncManager&) = delete;
 
-        void register_mutable_buffer(unsigned int& buffer_id)
+        auto register_mutable_buffer(unsigned int& buffer_id) -> std::optional<SyncInserter&>
         {
-            if (m_sync_queue.is_publisher_thread())
+            if (m_publisher_license.thread_has_license())
             {
                 assert(m_num_mutable_buffers < num_mutable_buffers && "Too many registered mutable_buffers");
                 buffer_id = m_num_mutable_buffers;
                 m_num_mutable_buffers++;
+
+                return m_sync_inserters.at(buffer_id);
             }
+
+            return {};
         }
 
-        void add_sync(const GLsync sync, unsigned int buffer_id);
-        void publish_added_syncs()
-        {
-            m_sync_queue.publish_queue();
-        }
         void make_publisher_thread()
         {
-            m_sync_queue.make_publisher_thread();
+            if (!m_publisher_license.try_aquire())
+            {
+                VE_LOG_ERROR("Publisher cannot aquire license.");
+                assert(false);
+            }
         }
 
 
         void stop();
 
-        auto is_sync_signaled(const unsigned int buffer_id) -> bool
-        {
-            assert(buffer_id < num_mutable_buffers && "Too many registered mutable_buffers");
-
-            if (m_sync_queue.is_publisher_thread())
-            {
-                bool is_signaled = m_mutable_buffer_syncs_signaled.at(buffer_id);
-
-                if (is_signaled)
-                {
-                    m_mutable_buffer_syncs_signaled.at(buffer_id) = false;
-                }
-
-                return is_signaled;
-            }
-
-            return false;
-        }
 
     private:
 
@@ -85,12 +74,9 @@ class SyncManager
         std::mutex        running_mutex{};
         std::atomic<bool> m_running = true;
 
-        std::array<std::atomic<bool>, num_mutable_buffers> m_mutable_buffer_syncs_signaled = {true};
-
-        // syncs
-        unsigned int                 m_num_mutable_buffers = 0;
-        std::vector<SyncQueue::Sync> m_syncs{};
-        SyncQueue                    m_sync_queue;
+        std::array<SyncInserter, num_mutable_buffers> m_sync_inserters = {};
+        ThreadLicense<license_active>                 m_publisher_license;
+        unsigned int                                  m_num_mutable_buffers = 0;
 };
 
 }; // namespace vengine

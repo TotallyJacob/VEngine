@@ -2,16 +2,15 @@ namespace vengine
 {
 
 SYNC_MANAGER_TEMPLATE
-SyncManager SYNC_MANAGER_IDENTIFIER::SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
+SyncManager SYNC_MANAGER_IDENTIFIER::SyncManager()
 {
-    init(num_sync_queues, pre_allocated_sync_queue_size);
+    init();
 }
 
 SYNC_MANAGER_TEMPLATE
-void SyncManager SYNC_MANAGER_IDENTIFIER::init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
+void SyncManager SYNC_MANAGER_IDENTIFIER::init()
 {
-    m_sync_queue.init(num_sync_queues, pre_allocated_sync_queue_size);
-    m_sync_queue.make_publisher_thread();
+    make_publisher_thread();
 
     HDC   hdc = wglGetCurrentDC();
     HGLRC hglrc = wglGetCurrentContext();
@@ -25,11 +24,6 @@ SyncManager SYNC_MANAGER_IDENTIFIER::~SyncManager()
     stop();
 }
 
-SYNC_MANAGER_TEMPLATE
-void SyncManager SYNC_MANAGER_IDENTIFIER::add_sync(const GLsync sync, unsigned int buffer_id)
-{
-    m_sync_queue.add_sync({sync, buffer_id});
-}
 
 SYNC_MANAGER_TEMPLATE
 void SyncManager SYNC_MANAGER_IDENTIFIER::stop()
@@ -108,8 +102,6 @@ void SyncManager SYNC_MANAGER_IDENTIFIER::thread_function(HDC hdc, HGLRC hglrc)
     wglShareLists(hglrc, hglrc_new);
     wglMakeCurrent(hdc, hglrc_new);
     VE_LOG("Sync manager, made context.");
-
-    m_sync_queue.make_publisher_thread();
 
     GLenum result;
     while (m_running)

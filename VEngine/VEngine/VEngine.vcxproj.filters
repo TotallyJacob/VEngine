@@ -118,10 +118,10 @@
     <Filter Include="Source Files\concurrency">
       <UniqueIdentifier>{1b3da99c-ded2-4c32-8b6f-d665249d7e37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\renderer\buffers\sync">
+    <Filter Include="Header Files\renderer\sync">
       <UniqueIdentifier>{d3c80262-8e49-4476-a062-56a3852610fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\renderer\buffers\sync">
+    <Filter Include="Source Files\renderer\sync">
       <UniqueIdentifier>{c5736393-ad10-4d9d-949d-99cb444bc39a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -253,7 +253,7 @@
       <Filter>Header Files\logging</Filter>
     </ClInclude>
     <ClInclude Include="renderer\SyncManager.h">
-      <Filter>Header Files\renderer\buffers\sync</Filter>
+      <Filter>Header Files\renderer\sync</Filter>
     </ClInclude>
     <ClInclude Include="renderer\PersistentMapBufferUtil.ipp">
       <Filter>Source Files\renderer\buffers</Filter>
@@ -268,16 +268,19 @@
       <Filter>Source Files\util</Filter>
     </ClInclude>
     <ClInclude Include="renderer\SyncQueue.h">
-      <Filter>Header Files\renderer\buffers\sync</Filter>
+      <Filter>Header Files\renderer\sync</Filter>
     </ClInclude>
     <ClInclude Include="ThreadLicense.h">
       <Filter>Header Files\concurrency</Filter>
     </ClInclude>
     <ClInclude Include="renderer\SyncManager.ipp">
-      <Filter>Source Files\renderer\buffers\sync</Filter>
+      <Filter>Source Files\renderer\sync</Filter>
     </ClInclude>
     <ClInclude Include="renderer\SyncBuffer.h">
-      <Filter>Header Files\renderer\buffers\sync</Filter>
+      <Filter>Header Files\renderer\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\SyncInserter.h">
+      <Filter>Header Files\renderer\sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -348,10 +351,10 @@
       <Filter>Source Files\concurrency</Filter>
     </ClCompile>
     <ClCompile Include="renderer\SyncQueue.cpp">
-      <Filter>Source Files\renderer\buffers\sync</Filter>
+      <Filter>Source Files\renderer\sync</Filter>
     </ClCompile>
     <ClCompile Include="renderer\SyncBuffer.cpp">
-      <Filter>Source Files\renderer\buffers\sync</Filter>
+      <Filter>Source Files\renderer\sync</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
