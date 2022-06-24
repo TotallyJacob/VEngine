@@ -6,6 +6,7 @@
 
 #include "MultiIndirectDrawer.h"
 #include "ShaderStorageManager.h"
+#include "SyncBuffer.h"
 #include "TextureManager.h"
 
 namespace vengine
@@ -62,6 +63,7 @@ class DefferedRenderer
 
         // Rbo and Fbo stuff
         RenderbufferLayout                                           m_rbo_layout = {};
+        SyncBuffer                                                   m_syncbuf = {1};
         MutableShaderStorage<GLuint64, GL_SHADER_STORAGE_BUFFER, 1>* m_texture_handles;
         std::vector<TextureLayout>                                   m_fbo_texture_layouts{};
         std::vector<unsigned int>                                    m_fbo_texture_ids{};

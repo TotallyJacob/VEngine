@@ -19,7 +19,8 @@ void MultiIndirectDrawer::draw(const unsigned int shader_program)
                                 m_num_objects,                                      // Draw objects
                                 0);                                                 // No stride (draw commands are tightly packed)
 
-    m_mutable_dib.insert_sync_on_readbuf();
+    auto sync_index = m_mutable_dib.get_readbuf_index();
+    m_mutable_dib_sync.insert_sync(sync_index);
 
     // m_mutable_dib.unbind();
     // unbind_vao();

@@ -270,6 +270,15 @@
     <ClInclude Include="renderer\SyncQueue.h">
       <Filter>Header Files\renderer\buffers\sync</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadLicense.h">
+      <Filter>Header Files\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\SyncManager.ipp">
+      <Filter>Source Files\renderer\buffers\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\SyncBuffer.h">
+      <Filter>Header Files\renderer\buffers\sync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VEngine.cpp">
@@ -338,10 +347,10 @@
     <ClCompile Include="ThreadPool.cpp">
       <Filter>Source Files\concurrency</Filter>
     </ClCompile>
-    <ClCompile Include="renderer\SyncManager.cpp">
+    <ClCompile Include="renderer\SyncQueue.cpp">
       <Filter>Source Files\renderer\buffers\sync</Filter>
     </ClCompile>
-    <ClCompile Include="renderer\SyncQueue.cpp">
+    <ClCompile Include="renderer\SyncBuffer.cpp">
       <Filter>Source Files\renderer\buffers\sync</Filter>
     </ClCompile>
   </ItemGroup>

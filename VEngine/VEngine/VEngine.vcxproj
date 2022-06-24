@@ -204,6 +204,8 @@
     <ClInclude Include="renderer\ShaderStorageManager.ipp" />
     <ClInclude Include="renderer\SyncManager.h" />
     <ClInclude Include="renderer\SyncQueue.h" />
+    <ClInclude Include="renderer\SyncBuffer.h" />
+    <ClInclude Include="ThreadLicense.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="renderer\MutableShaderStorage.h" />
@@ -229,8 +231,9 @@
     <ClCompile Include="ecs\SystemManager.cpp" />
     <ClCompile Include="renderer\TextureManager.cpp" />
     <ClCompile Include="renderer\ShaderStorageBinder.cpp" />
-    <ClCompile Include="renderer\SyncManager.cpp" />
+    <ClInclude Include="renderer\SyncManager.ipp" />
     <ClCompile Include="renderer\SyncQueue.cpp" />
+    <ClCompile Include="renderer\SyncBuffer.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="VEngine.cpp" />

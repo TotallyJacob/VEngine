@@ -13,7 +13,7 @@ void SyncQueue::init(const unsigned int num_queues, const unsigned int approxima
     assert(num_queues > 2 && "most be atleast 3 queues to work.");
 
     SYNC_QUEUE_MUTEX_DO(                                                                                    //
-        if (m_reader_thread_exists || m_publisher_thread_exists) {                                          //
+        if (m_reader_license.any_thread_has_license() || m_publisher_license.any_thread_has_license()) {    //
             VE_LOG_ERROR("Cannot init SyncQueue after defining a publisher or reader thread.");             //
             assert(false && "Bad Behaviour; init SyncQueue after defining a publisher or reader thread. "); //
             return;                                                                                         //
@@ -39,7 +39,7 @@ void SyncQueue::init(const unsigned int num_queues, const unsigned int approxima
 void SyncQueue::publish_queue()
 {
 
-    if (!publisher_try_lock())
+    if (!is_publisher_thread())
     {
         return;
     }
@@ -55,15 +55,15 @@ void SyncQueue::publish_queue()
 }
 
 
-void SyncQueue::add_sync(const GLsync sync)
+void SyncQueue::add_sync(const Sync sync)
 {
     add_sync_to_queue(sync, m_sync_queue_pos);
 }
 
-void SyncQueue::insert_published_syncs_into(std::vector<GLsync>& to_insert_into)
+void SyncQueue::insert_published_syncs_into(std::vector<Sync>& to_insert_into)
 {
 
-    if (!reader_try_lock())
+    if (!is_reader_thread())
     {
         return;
     }
@@ -117,9 +117,9 @@ auto SyncQueue::pre_allocated_num_queue_elements() -> unsigned int
     return m_pre_allocated_num_queue_elements;
 }
 
-void SyncQueue::add_sync_to_queue(const GLsync sync, const unsigned int queue_pos)
+void SyncQueue::add_sync_to_queue(const Sync sync, const unsigned int queue_pos)
 {
-    if (!publisher_try_lock())
+    if (!is_publisher_thread())
     {
         return;
     }
@@ -155,7 +155,7 @@ void SyncQueue::make_publisher_thread()
 {
     SYNC_QUEUE_MUTEX_DO(
 
-        if (!m_publisher_mutex.try_lock())                                                      //
+        if (!m_publisher_license.try_aquire())                                                  //
         {                                                                                       //
             VE_LOG_ERROR("cannot make publisher thread, another thread is already publisher."); //
             assert(false && "Bad behaviour, only one thread can call this.");                   //
@@ -163,8 +163,19 @@ void SyncQueue::make_publisher_thread()
         else                                                                                    //
         {                                                                                       //
             VE_LOG("SyncQueue, defined a publisher thread");                                    //
-            m_publisher_thread_exists = true;                                                   //
         }                                                                                       //
+
+        /* if (!m_publisher_mutex.try_lock())                                                 //
+         {                                                                                       //
+             VE_LOG_ERROR("cannot make publisher thread, another thread is already publisher."); //
+             assert(false && "Bad behaviour, only one thread can call this.");                   //
+         }                                                                                       //
+         else                                                                                    //
+         {                                                                                       //
+             VE_LOG("SyncQueue, defined a publisher thread");                                    //
+             m_publisher_thread_exists = true;                                                   //
+         }                                                                                       //
+         */
 
     );
 }
@@ -172,7 +183,17 @@ void SyncQueue::make_reader_thread()
 {
     SYNC_QUEUE_MUTEX_DO(
 
-        if (!m_reader_mutex.try_lock())                                                   //
+        if (!m_reader_license.try_aquire())                                               //
+        {                                                                                 //
+            VE_LOG_ERROR("cannot make reader thread, another thread is already reader."); //
+            assert(false && "Bad behaviour, only one thread can call this.");             //
+        }                                                                                 //
+        else                                                                              //
+        {                                                                                 //
+            VE_LOG("SyncQueue, defined a reader thread.");                                //
+        }                                                                                 //
+
+        /* if (!m_reader_mutex.try_lock())                                              //
         {                                                                                 //
             VE_LOG_ERROR("cannot make reader thread, another thread is already reader."); //
             assert(false && "Bad behaviour, only one thread can call this.");             //
@@ -182,55 +203,82 @@ void SyncQueue::make_reader_thread()
             VE_LOG("SyncQueue, defined a reader thread.");                                //
             m_reader_thread_exists = true;                                                //
         }                                                                                 //
+        */
     );
 }
 
-auto SyncQueue::publisher_try_lock() -> bool
+auto SyncQueue::is_publisher_thread() -> bool
 {
-    SYNC_QUEUE_MUTEX_DO(                                                                                //
-        if (!m_publisher_thread_exists)                                                                 //
-        {                                                                                               //
-            VE_LOG_ERROR("no publisher thread defined");                                                //
-            assert(false && "Bad behaviour, must define a publisher thread -> make_publisher_thread."); //
-            return false;                                                                               //
-        }                                                                                               //
+    SYNC_QUEUE_MUTEX_DO( //
 
-        std::unique_lock<std::recursive_mutex>       //
-            ul(m_publisher_mutex, std::try_to_lock); //
+        if (!m_publisher_license.thread_has_license())                                                       //
+        {                                                                                                    //
+            VE_LOG_ERROR("Is not publisher thread, cannot call publish_queue.");                             //
+            assert(false && "Bad behaviour, only publisher thread can do this. See make_publisher_thread."); //
+            return false;                                                                                    //
+        }                                                                                                    //
+        else                                                                                                 //
+        {                                                                                                    //
+            return true;
+        } //
 
-        if (ul.owns_lock()) //
-        {                   //
-            return true;    //
-        }                   //
+        /*
+            if (!m_publisher_thread_exists)                                                                 //
+            {                                                                                               //
+                VE_LOG_ERROR("no publisher thread defined");                                                //
+                assert(false && "Bad behaviour, must define a publisher thread -> make_publisher_thread."); //
+                return false;                                                                               //
+            }                                                                                               //
 
-        VE_LOG_ERROR("Is not publisher thread, cannot call publish_queue.");                             //
-        assert(false && "Bad behaviour, only publisher thread can do this. See make_publisher_thread."); //
-        return false;                                                                                    //
+            std::unique_lock<std::recursive_mutex>       //
+                ul(m_publisher_mutex, std::try_to_lock); //
+
+            if (ul.owns_lock()) //
+            {                   //
+                return true;    //
+            }                   //
+
+            VE_LOG_ERROR("Is not publisher thread, cannot call publish_queue.");                             //
+            assert(false && "Bad behaviour, only publisher thread can do this. See make_publisher_thread."); //
+            return false;                                                                                    // */
     );
     return true;
 }
 
-auto SyncQueue::reader_try_lock() -> bool
+auto SyncQueue::is_reader_thread() -> bool
 {
-    SYNC_QUEUE_MUTEX_DO(                                                                          //
-        if (!m_reader_thread_exists)                                                              //
-        {                                                                                         //
-            VE_LOG_ERROR("no reader thread defined");                                             //
-            assert(false && "Bad behaviour, must define a reader thread -> make_reader_thread."); //
-            return false;                                                                         //
-        }                                                                                         //
+    SYNC_QUEUE_MUTEX_DO( //
 
-        std::unique_lock<std::recursive_mutex>    //
-            ul(m_reader_mutex, std::try_to_lock); //
+        if (!m_reader_license.thread_has_license())                                                    //
+        {                                                                                              //
+            VE_LOG_ERROR("Is not reader thread, cannot call insert_published_queue.");                 //
+            assert(false && "Bad behaviour, only reader thread can do this. See make_reader_thread."); //
+            return false;                                                                              //
+        }                                                                                              //
+        else                                                                                           //
+        {                                                                                              //
+            return true;
+        } //
 
-        if (ul.owns_lock()) //
-        {                   //
-            return true;    //
-        }                   //
 
-        VE_LOG_ERROR("Is not reader thread, cannot call insert_published_queue.");                 //
-        assert(false && "Bad behaviour, only reader thread can do this. See make_reader_thread."); //
-        return false;                                                                              //
+        /* if (!m_reader_thread_exists)                                                         //
+{                                                                                         //
+VE_LOG_ERROR("no reader thread defined");                                             //
+assert(false && "Bad behaviour, must define a reader thread -> make_reader_thread."); //
+return false;                                                                         //
+}                                                                                         //
+
+std::unique_lock<std::recursive_mutex>    //
+ul(m_reader_mutex, std::try_to_lock); //
+
+if (ul.owns_lock()) //
+{                   //
+return true;    //
+}                   //
+
+VE_LOG_ERROR("Is not reader thread, cannot call insert_published_queue.");                 //
+assert(false && "Bad behaviour, only reader thread can do this. See make_reader_thread."); //
+return false;                                                                              // */
     );
     return true;
 }

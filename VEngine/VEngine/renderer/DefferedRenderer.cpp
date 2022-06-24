@@ -113,18 +113,13 @@ void DefferedRenderer::init_framebuf(unsigned int width, unsigned int height)
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
     // SSBOs
-    if (!m_texture_handles->readbuf_sync_invalid())
-    {
-        m_texture_handles->delete_readbuf_sync(); // even if it's already deleted it doesn't make a difference
-    }
-    else
-    {
-        VE_LOG_DEBUG("Sync invalid, thus already deleted baby. ");
-    }
-    m_texture_handles->insert_sync_on_readbuf();
-    m_texture_handles->standard_wait_sync<true, true>(m_texture_handles->get_readbuf_sync(), " gBuffer texture resize ");
+
+    m_syncbuf.delete_sync(0);
+    auto sync_index = m_texture_handles->get_readbuf_index();
+    m_syncbuf.insert_sync(sync_index);
+    m_syncbuf.standard_wait_sync<true, true>(m_syncbuf.sync_at(sync_index), " gBuffer texture resize ");
     m_texture_handles->set_updatebuf_data(&handles.front(), handles.size(), 0);
-    m_texture_handles->delete_readbuf_sync();
+    m_syncbuf.delete_sync(0);
 }
 
 void DefferedRenderer::init_quad_rendering()

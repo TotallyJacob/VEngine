@@ -53,6 +53,11 @@ class MultiIndirectDrawer
             return &m_mutable_dib;
         }
 
+        SyncBuffer* get_mutable_dib_sync()
+        {
+            return &m_mutable_dib_sync;
+        }
+
         void draw(const unsigned int shader_program);
 
     private:
@@ -65,6 +70,7 @@ class MultiIndirectDrawer
         // OpenGL buffers
         CourierBuffer<IndirectElements> m_dib_courier = {};
         MutableDib<3>                   m_mutable_dib = {};
+        SyncBuffer                      m_mutable_dib_sync = {3};
         unsigned int                    m_vao = 0, m_vbo = 0, m_ebo = 0;
 
         // Test things

@@ -44,7 +44,8 @@ class MultiIndirectSystem : public System
             // BufferCuller stuff (assume MultiIndirectDrawer is already fully
             // setup)
             m_drawer_culler = std::make_unique<IndirectDrawerCuller>();
-            m_drawer_culler->init(drawer->get_mutable_dib(), drawer->get_dib_courier(), drawer->get_mesh_lodId_to_dib_index());
+            m_drawer_culler->init(drawer->get_mutable_dib(), drawer->get_dib_courier(), drawer->get_mutable_dib_sync(),
+                                  drawer->get_mesh_lodId_to_dib_index());
             m_lod_manager = std::make_unique<IndirectDrawerLodManager>();
 
             register_components();

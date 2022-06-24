@@ -10,6 +10,7 @@
 #include "MultiIndirectDrawer.h"
 #include "MutableDib.h"
 #include "MutableShaderStorage.h"
+#include "SyncBuffer.h"
 
 namespace vengine
 {
@@ -23,30 +24,37 @@ class IndirectDrawerCuller
 
         inline void place_fence()
         {
-            m_dib_to_entity_data->insert_sync_on_readbuf();
+            m_dib_to_entity_syncbuf.insert_sync(m_dib_to_entity_data->get_readbuf_index());
+            // m_dib_to_entity_data->insert_sync_on_readbuf();
         }
 
 
         inline void swap_buffers()
         {
             // Syncing 1
-            GLsync sync = m_dib_to_entity_data->get_readbuf_sync();
-            m_dib_to_entity_data->standard_wait_sync<true, false>(sync, "indirect drawer culler ");
+            auto   dib_to_index = m_dib_to_entity_data->get_readbuf_index();
+            GLsync sync = m_dib_to_entity_syncbuf.sync_at(dib_to_index);
+            m_dib_to_entity_syncbuf.standard_wait_sync<true, false>(sync, "indirect drawer culler ");
             m_dib_to_entity_data->swap_buffers<true>();
             m_dib_to_entity_data->copy_previous_updatebuf_into_updatebuf();
+            m_dib_to_entity_syncbuf.delete_sync(dib_to_index);
 
             // Syncing 2
-            GLsync sync2 = m_mutable_dib->get_readbuf_sync();
-            m_mutable_dib->standard_wait_sync<true, false>(sync2, "indirect dib buffer sync.");
+            auto   mutable_index = m_mutable_dib->get_readbuf_index();
+            GLsync sync2 = m_mutable_dib_syncbuf->sync_at(mutable_index);
+            m_mutable_dib_syncbuf->standard_wait_sync<true, false>(sync2, "indirect dib buffer sync.");
             m_mutable_dib->swap_buffers<true>();
             m_mutable_dib->set_updatebuf_data(*m_dib_courier);
+            m_mutable_dib_syncbuf->delete_sync(mutable_index);
+
             // m_mutable_dib->copy_previous_updatebuf_into_updatebuf();
         }
 
         // Setting stuff
-        inline void init(MutableDib<3>* dib, CourierBuffer<IndirectElements>* dib_courier,
+        inline void init(MutableDib<3>* dib, CourierBuffer<IndirectElements>* dib_courier, SyncBuffer* dib_sync,
                          const std::unordered_map<unsigned int, unsigned int>& meshLodIdToDibIndex)
         {
+            set_mutable_dib_syncbuf(dib_sync);
             set_courier_buffer(dib_courier);
             set_mutable_dib(dib);
             set_mesh_lodId_to_dib_index(meshLodIdToDibIndex);
@@ -56,6 +64,12 @@ class IndirectDrawerCuller
         {
             this->m_dib_courier = dib_courier;
         }
+
+        inline void set_mutable_dib_syncbuf(SyncBuffer* syncbuf)
+        {
+            this->m_mutable_dib_syncbuf = syncbuf;
+        }
+
         inline void set_mutable_dib(MutableDib<3>* dib)
         {
             this->m_mutable_dib = dib;
@@ -92,9 +106,11 @@ class IndirectDrawerCuller
         unsigned int                     m_num_objects = 0;
         CourierBuffer<IndirectElements>* m_dib_courier = nullptr;
         MutableDib<3>*                   m_mutable_dib = nullptr;
+        SyncBuffer*                      m_mutable_dib_syncbuf;
 
         // This shader storage copies and thereby does not change the binding info....
         MutableShaderStorage<unsigned int, GL_SHADER_STORAGE_BUFFER, 3>* m_dib_to_entity_data;
+        SyncBuffer                                                       m_dib_to_entity_syncbuf = {3};
         std::vector<std::unordered_map<unsigned int, unsigned int>>      m_dib_instanceId_to_ssboId{};
         std::unordered_map<unsigned int, unsigned int>                   m_mesh_lod_to_dib_index{};
         std::vector<unsigned int>                                        m_ssboId_to_instanceId{};

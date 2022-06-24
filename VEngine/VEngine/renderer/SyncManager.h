@@ -5,10 +5,9 @@
 
 #include <windows.h>
 
+#include <array>
 #include <iostream>
-#include <map>
 #include <mutex>
-#include <semaphore>
 #include <thread>
 
 #include "../Logger.hpp"
@@ -18,11 +17,10 @@ namespace vengine
 {
 
 
-/*
- *
- * HUGE PERF PROBLEM WITH LOCKING WITH MAIN THREAD DUE TO add_sync();
- *
- */
+#define SYNC_MANAGER_IDENTIFIER <num_mutable_buffers>
+#define SYNC_MANAGER_TEMPLATE   template <unsigned int num_mutable_buffers>
+
+SYNC_MANAGER_TEMPLATE
 class SyncManager
 {
 
@@ -33,7 +31,17 @@ class SyncManager
 
         SyncManager(const SyncManager&) = delete;
 
-        void add_sync(const GLsync sync);
+        void register_mutable_buffer(unsigned int& buffer_id)
+        {
+            if (m_sync_queue.is_publisher_thread())
+            {
+                assert(m_num_mutable_buffers < num_mutable_buffers && "Too many registered mutable_buffers");
+                buffer_id = m_num_mutable_buffers;
+                m_num_mutable_buffers++;
+            }
+        }
+
+        void add_sync(const GLsync sync, unsigned int buffer_id);
         void publish_added_syncs()
         {
             m_sync_queue.publish_queue();
@@ -45,6 +53,25 @@ class SyncManager
 
 
         void stop();
+
+        auto is_sync_signaled(const unsigned int buffer_id) -> bool
+        {
+            assert(buffer_id < num_mutable_buffers && "Too many registered mutable_buffers");
+
+            if (m_sync_queue.is_publisher_thread())
+            {
+                bool is_signaled = m_mutable_buffer_syncs_signaled.at(buffer_id);
+
+                if (is_signaled)
+                {
+                    m_mutable_buffer_syncs_signaled.at(buffer_id) = false;
+                }
+
+                return is_signaled;
+            }
+
+            return false;
+        }
 
     private:
 
@@ -58,9 +85,17 @@ class SyncManager
         std::mutex        running_mutex{};
         std::atomic<bool> m_running = true;
 
+        std::array<std::atomic<bool>, num_mutable_buffers> m_mutable_buffer_syncs_signaled = {true};
+
         // syncs
-        std::vector<GLsync> m_syncs{};
-        SyncQueue           m_sync_queue;
+        unsigned int                 m_num_mutable_buffers = 0;
+        std::vector<SyncQueue::Sync> m_syncs{};
+        SyncQueue                    m_sync_queue;
 };
 
 }; // namespace vengine
+
+#include "SyncManager.ipp"
+
+#undef SYNC_MANAGER_IDENTIFIER
+#undef SYNC_MANAGER_TEMPLATE

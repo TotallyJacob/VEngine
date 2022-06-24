@@ -1,5 +1,3 @@
-#pragma once
-
 namespace vengine
 {
 
@@ -38,10 +36,10 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::gen(unsigned int num_elements, con
 
     // Sync stuff
     init_sync_type(specialSyncType);
-    for (int i = 0; i < num_buffers; i++)
-    {
-        m_fences[i] = m_invalid_sync_object; // Thereby glDeleteSync silently ignroes it.
-    }
+    // for (int i = 0; i < num_buffers; i++)
+    //{
+    //  m_fences[i] = m_invalid_sync_object; // Thereby glDeleteSync silently ignroes it.
+    //}
 
     init_binding_data();
 }
@@ -176,7 +174,7 @@ void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::swap_buffers()
 
     if constexpr (delete_readbuf_sync)
     {
-        this->delete_readbuf_sync();
+        // this->delete_readbuf_sync();
     }
 }
 
@@ -199,7 +197,7 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::unbind() const
 /*
     SYNC STUFF
 */
-
+/*
 MUTABLE_BUFFER_TEMPLATE
 template <bool print_if_sync_fail, bool print_sync_time>
 void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::standard_wait_sync(const GLsync& sync, const std::string& print_sync_message,
@@ -301,6 +299,19 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::insert_sync_on_readbuf()
     m_fences[m_readbuf_index] = sync;
 }
 
+
+MUTABLE_BUFFER_TEMPLATE
+auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_readbuf_sync() -> GLsync&
+{
+    return m_fences[m_readbuf_index];
+}
+
+MUTABLE_BUFFER_TEMPLATE
+auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_updatebuf_sync() -> GLsync&
+{
+    return m_fences[m_updatebuf_index];
+}
+*/
 /*
     FLAG STUFF
 */
@@ -475,18 +486,6 @@ inline void MutableBuffer MUTABLE_BUFFER_IDENTIFIER::apply_mem_barrier_if_needed
 */
 
 MUTABLE_BUFFER_TEMPLATE
-auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_readbuf_sync() -> GLsync&
-{
-    return m_fences[m_readbuf_index];
-}
-
-MUTABLE_BUFFER_TEMPLATE
-auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_updatebuf_sync() -> GLsync&
-{
-    return m_fences[m_updatebuf_index];
-}
-
-MUTABLE_BUFFER_TEMPLATE
 auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_byte_array() -> ByteArray<DATA_TYPE, num_buffers>&
 {
     return m_persistent_maps;
@@ -544,6 +543,17 @@ auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_num_elements() const -> const 
     return m_persistent_maps.get_num_elements_per_buf();
 }
 
+MUTABLE_BUFFER_TEMPLATE
+auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_updatebuf_index() const -> const unsigned int
+{
+    return m_updatebuf_index;
+}
+
+MUTABLE_BUFFER_TEMPLATE
+auto MutableBuffer MUTABLE_BUFFER_IDENTIFIER::get_readbuf_index() const -> const unsigned int
+{
+    return m_readbuf_index;
+}
 
 
 }; // namespace vengine

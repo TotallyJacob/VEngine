@@ -1,13 +1,14 @@
-#include "SyncManager.h"
+namespace vengine
+{
 
-using namespace vengine;
-
-SyncManager::SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
+SYNC_MANAGER_TEMPLATE
+SyncManager SYNC_MANAGER_IDENTIFIER::SyncManager(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
 {
     init(num_sync_queues, pre_allocated_sync_queue_size);
 }
 
-void SyncManager::init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
+SYNC_MANAGER_TEMPLATE
+void SyncManager SYNC_MANAGER_IDENTIFIER::init(unsigned int num_sync_queues, unsigned int pre_allocated_sync_queue_size)
 {
     m_sync_queue.init(num_sync_queues, pre_allocated_sync_queue_size);
     m_sync_queue.make_publisher_thread();
@@ -18,17 +19,20 @@ void SyncManager::init(unsigned int num_sync_queues, unsigned int pre_allocated_
     m_thread = std::make_unique<std::thread>(&SyncManager::thread_function, this, hdc, hglrc);
 }
 
-SyncManager::~SyncManager()
+SYNC_MANAGER_TEMPLATE
+SyncManager SYNC_MANAGER_IDENTIFIER::~SyncManager()
 {
     stop();
 }
 
-void SyncManager::add_sync(const GLsync sync)
+SYNC_MANAGER_TEMPLATE
+void SyncManager SYNC_MANAGER_IDENTIFIER::add_sync(const GLsync sync, unsigned int buffer_id)
 {
-    m_sync_queue.add_sync(sync);
+    m_sync_queue.add_sync({sync, buffer_id});
 }
 
-void SyncManager::stop()
+SYNC_MANAGER_TEMPLATE
+void SyncManager SYNC_MANAGER_IDENTIFIER::stop()
 {
     m_running = false;
 
@@ -43,7 +47,8 @@ void SyncManager::stop()
     }
 }
 
-void SyncManager::thread_sync_handler(GLenum& result)
+SYNC_MANAGER_TEMPLATE
+void SyncManager SYNC_MANAGER_IDENTIFIER::thread_sync_handler(GLenum& result)
 {
     m_sync_queue.insert_published_syncs_into(m_syncs);
 
@@ -51,8 +56,9 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
     std::this_thread::sleep_for(std::chrono::microseconds(10));
 
-    for (auto& sync : m_syncs)
+    for (auto& sync_object : m_syncs)
     {
+        auto& sync = sync_object.sync;
 
         if (sync == invalid_sync)
         {
@@ -79,6 +85,8 @@ void SyncManager::thread_sync_handler(GLenum& result)
 
         if (con)
         {
+            const auto& buffer_id = sync_object.buffer_id;
+            m_mutable_buffer_syncs_signaled.at(buffer_id) = true;
             VE_LOG_WARNING("con changed, so removing sync: " << sync);
             sync = invalid_sync;
         }
@@ -91,7 +99,9 @@ void SyncManager::thread_sync_handler(GLenum& result)
         m_syncs.erase(to_remove);
     }
 }
-void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
+
+SYNC_MANAGER_TEMPLATE
+void SyncManager SYNC_MANAGER_IDENTIFIER::thread_function(HDC hdc, HGLRC hglrc)
 {
     // Windows context stuff
     HGLRC hglrc_new = wglCreateContext(hdc);
@@ -99,7 +109,7 @@ void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
     wglMakeCurrent(hdc, hglrc_new);
     VE_LOG("Sync manager, made context.");
 
-    m_sync_queue.make_reader_thread();
+    m_sync_queue.make_publisher_thread();
 
     GLenum result;
     while (m_running)
@@ -113,3 +123,5 @@ void SyncManager::thread_function(HDC hdc, HGLRC hglrc)
     wglDeleteContext(hglrc_new);
     VE_LOG("Stopping running sync manager thread.");
 }
+
+}; // namespace vengine
