@@ -13,7 +13,7 @@
 
 #include "../Logger.hpp"
 #include "../ThreadLicense.h"
-#include "SyncInserter.h"
+#include "ConcSyncInserter.h"
 
 namespace vengine
 {
@@ -74,9 +74,9 @@ class SyncManager
         std::mutex        running_mutex{};
         std::atomic<bool> m_running = true;
 
-        std::array<SyncInserter, num_mutable_buffers> m_sync_inserters = {};
-        ThreadLicense<license_active>                 m_publisher_license;
-        unsigned int                                  m_num_mutable_buffers = 0;
+        std::array<ConcSyncInserter, num_mutable_buffers> m_sync_inserters = {};
+        ThreadLicense<license_active>                     m_publisher_license;
+        unsigned int                                      m_num_mutable_buffers = 0;
 };
 
 }; // namespace vengine

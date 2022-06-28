@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "../Logger.hpp"
+#include "Logger.hpp"
 #include <mutex>
 
 template <bool active>

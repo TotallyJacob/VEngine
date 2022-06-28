@@ -279,8 +279,17 @@
     <ClInclude Include="renderer\SyncBuffer.h">
       <Filter>Header Files\renderer\sync</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\SyncInserter.h">
+    <ClInclude Include="renderer\ConcSyncInserter.h">
       <Filter>Header Files\renderer\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ConcSyncBuffer.h">
+      <Filter>Header Files\renderer\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ConcSyncInserter.hpp">
+      <Filter>Source Files\renderer\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\ConcSyncBuffer.hpp">
+      <Filter>Source Files\renderer\sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

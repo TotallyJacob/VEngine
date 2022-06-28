@@ -165,6 +165,9 @@
     <ClInclude Include="ByteArray.h" />
     <ClInclude Include="ByteArray.ipp" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="renderer\ConcSyncBuffer.hpp" />
+    <ClInclude Include="renderer\ConcSyncInserter.hpp" />
+    <ClInclude Include="renderer\ConcSyncBuffer.h" />
     <ClInclude Include="renderer\PersistentMapBufferUtil.ipp" />
     <ClInclude Include="CourierBuffer.ipp" />
     <ClInclude Include="CourierBuffer.h" />
@@ -205,7 +208,7 @@
     <ClInclude Include="renderer\SyncManager.h" />
     <ClInclude Include="renderer\SyncQueue.h" />
     <ClInclude Include="renderer\SyncBuffer.h" />
-    <ClInclude Include="renderer\SyncInserter.h" />
+    <ClInclude Include="renderer\ConcSyncInserter.h" />
     <ClInclude Include="ThreadLicense.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
