@@ -16,53 +16,13 @@ class SystemManager
     public:
 
         template <typename T>
-        std::shared_ptr<T> register_system()
-        {
-            const char* typeName = typeid(T).name();
-
-            assert(m_systems.find(typeName) == m_systems.end() && "Registering a system more then once.");
-
-            auto system = std::make_shared<T>();
-            m_systems.insert({typeName, system});
-
-            return system;
-        }
+        auto register_system() -> std::shared_ptr<T>;
 
         template <typename T>
-        void set_signature(Signature signature)
-        {
-            const char* typeName = typeid(T).name();
+        void set_signature(Signature signature);
 
-            assert(m_systems.find(typeName) != m_systems.end() && "System used before registering");
-
-            m_signatures.insert({typeName, signature});
-        }
-
-        void id_destroyed(Id id)
-        {
-            for (auto const& [typeName, system] : m_systems)
-            {
-                system->m_ids.erase(id);
-            }
-        }
-
-        void id_signature_changed(Id id, Signature newSignature)
-        {
-            for (auto const& [typeName, system] : m_systems)
-            {
-                auto const& systemSignature = m_signatures[typeName];
-
-                // Does bitwise binary wizardry to return a std::bitsize that only has common bits set
-                if ((newSignature & systemSignature) == systemSignature)
-                {
-                    system->m_ids.insert(id);
-                }
-                else
-                {
-                    system->m_ids.erase(id);
-                }
-            }
-        }
+        void id_destroyed(Id id);
+        void id_signature_changed(Id id, Signature newSignature);
 
     private:
 
@@ -71,3 +31,5 @@ class SystemManager
 };
 
 }; // namespace buf
+
+#include "SystemManager.ipp"

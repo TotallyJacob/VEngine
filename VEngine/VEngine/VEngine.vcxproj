@@ -172,9 +172,9 @@
     <ClInclude Include="buffers\ICompData.h" />
     <ClInclude Include="buffers\MutableBufferOptions.hpp" />
     <ClInclude Include="buffers\PartitionManager.h" />
-    <ClInclude Include="buffers\CompData.hpp" />
-    <ClInclude Include="buffers\CompManager.hpp" />
-    <ClInclude Include="buffers\MutableBufferCoordinator.hpp" />
+    <ClInclude Include="buffers\CompData.ipp" />
+    <ClInclude Include="buffers\CompManager.ipp" />
+    <ClInclude Include="buffers\MutableBufferCoordinator.ipp" />
     <ClInclude Include="renderer\ConcSyncBuffer.hpp" />
     <ClInclude Include="renderer\ConcSyncInserter.hpp" />
     <ClInclude Include="renderer\ConcSyncBuffer.h" />
@@ -220,7 +220,9 @@
     <ClInclude Include="renderer\ConcSyncInserter.h" />
     <ClInclude Include="buffers\SystemManager.h" />
     <ClInclude Include="buffers\System.h" />
-    <ClInclude Include="buffers\SystemManager.hpp" />
+    <ClInclude Include="buffers\SystemManager.ipp" />
+    <ClInclude Include="buffers\TestComponent.h" />
+    <ClInclude Include="buffers\TestSystem.h" />
     <ClInclude Include="ThreadLicense.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />

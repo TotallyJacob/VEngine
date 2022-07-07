@@ -17,55 +17,21 @@ class CompManager
     public:
 
         template <typename T>
-        void register_components(const Id preallocation_size)
-        {
-            const char* typeName = typeid(T).name();
-
-            assert(m_component_types.find(typeName) == m_component_types.end() && "Error, component already registered");
-
-            m_component_types.insert({typeName, m_next_component_type});
-            m_component_datas.insert({typeName, std::make_shared<CompData<T>>()});
-            m_next_component_type++;
-
-            get_component_data()->preallocate(preallocation_size);
-        }
+        void register_components(const Id preallocation_size);
 
         template <typename T>
-        ComponentType get_component_type()
-        {
-            const char* typeName = typeid(T).name();
-
-            assert(m_component_types.find(typeName) != m_component_types.end() &&
-                   "Error, trying to get componentType from a component that isn't registered.");
-
-            return m_component_types[typeName];
-        }
+        ComponentType get_component_type();
 
         template <typename T>
-        void add_component(Id id, T component)
-        {
-            get_compoent_data<T>()->insert_data(id, component);
-        }
+        void add_component(Id id, T component);
 
         template <typename T>
-        void remove_component(Id id)
-        {
-            get_compoent_data<T>()->remove_data(id);
-        }
+        void remove_component(Id id);
 
         template <typename T>
-        T& get_component(Id id)
-        {
-            return get_compoent_data<T>()->get_data(id);
-        }
+        auto get_component(Id id) -> T&;
 
-        void id_destroyed(Id id)
-        {
-            for (auto const& [type_name, component] : m_component_datas)
-            {
-                component->destroy_id(id);
-            }
-        }
+        void id_destroyed(Id id);
 
     private:
 
@@ -75,14 +41,9 @@ class CompManager
 
 
         template <typename T>
-        std::shared_ptr<CompData<T>> get_compoent_data()
-        {
-            const char* typeName = typeid(T).name();
-
-            assert(m_component_types.find(typeName) != m_component_types.end() && "Component not registered before use.");
-
-            return std::static_pointer_cast<CompData<T>>(m_component_datas[typeName]); // Nice little dogy cast ting
-        }
+        auto get_compoent_data() -> std::shared_ptr<CompData<T>>;
 };
 
 }; // namespace buf
+
+#include "CompManager.ipp"

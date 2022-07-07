@@ -366,17 +366,23 @@
     <ClInclude Include="buffers\CompManager.h">
       <Filter>Header Files\buffers\bcs\managers</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\CompManager.hpp">
+    <ClInclude Include="buffers\CompManager.ipp">
       <Filter>Source Files\buffers\bcs\managers</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\SystemManager.hpp">
+    <ClInclude Include="buffers\SystemManager.ipp">
       <Filter>Source Files\buffers\bcs\managers</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\CompData.hpp">
+    <ClInclude Include="buffers\CompData.ipp">
       <Filter>Source Files\buffers\bcs\none-managers</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\MutableBufferCoordinator.hpp">
+    <ClInclude Include="buffers\MutableBufferCoordinator.ipp">
       <Filter>Source Files\buffers\bcs</Filter>
+    </ClInclude>
+    <ClInclude Include="buffers\TestComponent.h">
+      <Filter>Header Files\buffers\components</Filter>
+    </ClInclude>
+    <ClInclude Include="buffers\TestSystem.h">
+      <Filter>Header Files\buffers\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
