@@ -2,8 +2,18 @@ namespace vengine
 {
 
 CONC_SYNC_INSERTER_TEMPLATE
-ConcSyncInserter CONC_SYNC_INSERTER_IDENTIFIER::ConcSyncInserter()
+ConcSyncInserter CONC_SYNC_INSERTER_IDENTIFIER::ConcSyncInserter(bool init)
 {
+    if (init)
+    {
+        this->init();
+    }
+}
+
+CONC_SYNC_INSERTER_TEMPLATE
+void ConcSyncInserter CONC_SYNC_INSERTER_IDENTIFIER::init()
+{
+
     if (!m_inserter_license.try_aquire())
     {
         VE_LOG_ERROR("Cannot make ConcSyncInserter inserter thread in constructor. Huge problem going on.");

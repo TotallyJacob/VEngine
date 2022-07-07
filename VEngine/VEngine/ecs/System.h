@@ -11,6 +11,6 @@ class System
 {
     public:
 
-        std::set<Entity> m_entities;
+        std::set<Entity> m_ids;
 };
 }; // namespace vengine

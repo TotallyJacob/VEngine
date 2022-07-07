@@ -10,7 +10,8 @@ SyncManager SYNC_MANAGER_IDENTIFIER::SyncManager()
 SYNC_MANAGER_TEMPLATE
 void SyncManager SYNC_MANAGER_IDENTIFIER::init()
 {
-    make_publisher_thread();
+    m_sync_inserter.init();
+    m_syncbuf.make_sync_inserter(m_sync_inserter);
 
     HDC   hdc = wglGetCurrentDC();
     HGLRC hglrc = wglGetCurrentContext();
@@ -44,7 +45,7 @@ void SyncManager SYNC_MANAGER_IDENTIFIER::stop()
 SYNC_MANAGER_TEMPLATE
 void SyncManager SYNC_MANAGER_IDENTIFIER::thread_sync_handler(GLenum& result)
 {
-    m_sync_queue.insert_published_syncs_into(m_syncs);
+    /* m_sync_queue.insert_published_syncs_into(m_syncs);
 
     static const GLsync invalid_sync = 0;
 
@@ -87,11 +88,11 @@ void SyncManager SYNC_MANAGER_IDENTIFIER::thread_sync_handler(GLenum& result)
     }
 
     // Removing invalid sync objects
-    auto to_remove = std::find(m_syncs.begin(), m_syncs.end(), invalid_sync);
-    if (to_remove != m_syncs.end())
-    {
-        m_syncs.erase(to_remove);
-    }
+    // auto to_remove = std::find(m_syncs.begin(), m_syncs.end(), invalid_sync);
+    // if (to_remove != m_syncs.end())
+    //{
+    //  m_syncs.erase(to_remove);
+    // } */
 }
 
 SYNC_MANAGER_TEMPLATE

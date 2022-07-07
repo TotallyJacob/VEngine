@@ -13,16 +13,16 @@
 
 #include "../Logger.hpp"
 #include "../ThreadLicense.h"
-#include "ConcSyncInserter.h"
+#include "ConcSyncBuffer.h"
 
 namespace vengine
 {
 
 
-#define SYNC_MANAGER_IDENTIFIER <num_mutable_buffers, license_active>
-#define SYNC_MANAGER_TEMPLATE   template <unsigned int num_mutable_buffers, const bool license_active>
+#define SYNC_MANAGER_IDENTIFIER <num_mutable_buffers, num_syncs, license_active>
+#define SYNC_MANAGER_TEMPLATE   template <const unsigned int num_mutable_buffers, const unsigned int num_syncs, const bool license_active>
 
-template <unsigned int num_mutable_buffers, const bool license_active = false>
+SYNC_MANAGER_TEMPLATE
 class SyncManager
 {
 
@@ -31,32 +31,18 @@ class SyncManager
         SyncManager();
         ~SyncManager();
 
+        SyncManager(const SyncManager&) = delete;
+        SyncManager(SyncManager&&) = delete;
+
         void init();
 
-        SyncManager(const SyncManager&) = delete;
-
-        auto register_mutable_buffer(unsigned int& buffer_id) -> std::optional<SyncInserter&>
+        auto register_mutable_buffer(unsigned int& buffer_id)
         {
-            if (m_publisher_license.thread_has_license())
-            {
-                assert(m_num_mutable_buffers < num_mutable_buffers && "Too many registered mutable_buffers");
-                buffer_id = m_num_mutable_buffers;
-                m_num_mutable_buffers++;
-
-                return m_sync_inserters.at(buffer_id);
-            }
-
-            return {};
+            buffer_id = m_num_mutable_buffers;
+            m_num_mutable_buffers++;
         }
 
-        void make_publisher_thread()
-        {
-            if (!m_publisher_license.try_aquire())
-            {
-                VE_LOG_ERROR("Publisher cannot aquire license.");
-                assert(false);
-            }
-        }
+        void add_sync(unsigned int buffer_id);
 
 
         void stop();
@@ -74,9 +60,9 @@ class SyncManager
         std::mutex        running_mutex{};
         std::atomic<bool> m_running = true;
 
-        std::array<ConcSyncInserter, num_mutable_buffers> m_sync_inserters = {};
-        ThreadLicense<license_active>                     m_publisher_license;
-        unsigned int                                      m_num_mutable_buffers = 0;
+        ConcSyncInserter<num_syncs, license_active> m_sync_inserter = {};
+        ConcSyncBuffer<num_syncs, license_active>   m_syncbuf = {};
+        unsigned int                                m_num_mutable_buffers = 0;
 };
 
 }; // namespace vengine

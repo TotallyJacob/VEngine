@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 
+#include "ConcSyncBuffer.h"
+
 namespace vengine
 {
 
@@ -21,8 +23,6 @@ class SyncBuffer
         void init(unsigned int buffer_size);
 
         void insert_sync(const unsigned int sync_index);
-        void insert_all_syncs();
-
         void delete_sync(const unsigned int sync_index); // allows an already invalid/deleted sync.
         void delete_all_syncs();
 

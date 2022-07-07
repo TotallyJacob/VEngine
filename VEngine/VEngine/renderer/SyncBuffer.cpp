@@ -23,13 +23,6 @@ void SyncBuffer::insert_sync(const unsigned int sync_index)
     glFlush();
 }
 
-void SyncBuffer::insert_all_syncs()
-{
-    for (size_t i = 0; i < num_syncs(); i++)
-    {
-        insert_sync(i);
-    }
-}
 
 void SyncBuffer::delete_sync(const unsigned int sync_index) // allows an already invalid/deleted sync.
 {

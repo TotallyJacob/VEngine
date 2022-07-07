@@ -3,7 +3,7 @@ namespace vengine
 
 CONC_SYNC_BUFFER_TEMPLATE
 void ConcSyncBuffer
-CONC_SYNC_BUFFER_IDENTIFIER::make_insereter_thread(const std::shared_ptr<ConcSyncInserter<num_buffers, thread_license>>& sync_inserter)
+CONC_SYNC_BUFFER_IDENTIFIER::make_sync_inserter(const std::shared_ptr<ConcSyncInserter<buffer_size, thread_license>>& sync_inserter)
 {
     if (m_sync_inserter != nullptr)
     {
@@ -25,9 +25,24 @@ void ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::delete_sync_at(unsigned int syn
 
     m_sync_inserter.delete_sync_at(sync_index);
 }
+CONC_SYNC_BUFFER_TEMPLATE
+void ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::delete_all_syncs()
+{
+    if (m_sync_inserter == nullptr)
+    {
+        VE_LOG_ERROR("Sync_Inserter not yet defined, should not call delete_all_syncs.");
+        return;
+    }
+
+    for (unsigned int i = 0; i < num_syncs(); i++)
+    {
+        delete_sync_at(i);
+    }
+}
+
 
 CONC_SYNC_BUFFER_TEMPLATE
-void ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::sync_at(unsigned int sync_index)->std::atomic<GLsync>&
+auto ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::sync_at(unsigned int sync_index) -> std::atomic<GLsync>&
 {
     if (m_sync_inserter == nullptr)
     {
@@ -37,6 +52,18 @@ void ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::sync_at(unsigned int sync_index
     }
 
     return m_sync_inserter.sync_at(sync_index);
+}
+
+CONC_SYNC_BUFFER_TEMPLATE
+auto ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::sync_invalid(const unsigned int sync_index) -> bool
+{
+    return sync_at(sync_index) == m_invalid_sync;
+}
+
+CONC_SYNC_BUFFER_TEMPLATE
+constexpr auto ConcSyncBuffer CONC_SYNC_BUFFER_IDENTIFIER::num_syncs() -> const unsigned int
+{
+    return buffer_size;
 }
 
 }; // namespace vengine

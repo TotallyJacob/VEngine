@@ -12,8 +12,8 @@
 namespace vengine
 {
 
-#define CONC_SYNC_BUFFER_IDENTIFIER <num_buffers, thread_license>
-#define CONC_SYNC_BUFFER_TEMPLATE   template <unsigned int num_buffers, bool thread_license>
+#define CONC_SYNC_BUFFER_IDENTIFIER <buffer_size, thread_license>
+#define CONC_SYNC_BUFFER_TEMPLATE   template <unsigned int buffer_size, bool thread_license>
 
 CONC_SYNC_BUFFER_TEMPLATE
 class ConcSyncBuffer
@@ -22,13 +22,18 @@ class ConcSyncBuffer
 
         ConcSyncBuffer() = default;
 
-        void make_insereter_thread(const std::shared_ptr<ConcSyncInserter<num_buffers, thread_license>>& sync_inserter);
+        void make_sync_inserter(const std::shared_ptr<ConcSyncInserter<buffer_size, thread_license>>& sync_inserter);
         void delete_sync_at(unsigned int sync_index);
-        void sync_at(unsigned int sync_index)->std::atomic<GLsync>&;
+        void delete_all_syncs();
+
+        auto           sync_at(unsigned int sync_index) -> std::atomic<GLsync>&;
+        auto           sync_invalid(const unsigned int sync_index) -> bool;
+        constexpr auto num_syncs() -> const unsigned int;
 
     private:
 
-        std::shared_ptr<ConcSyncInserter<num_buffers, thread_license>> m_sync_inserter = {};
+        constexpr static GLsync                                        m_invalid_sync = 0;
+        std::shared_ptr<ConcSyncInserter<buffer_size, thread_license>> m_sync_inserter = {};
 };
 
 }; // namespace vengine

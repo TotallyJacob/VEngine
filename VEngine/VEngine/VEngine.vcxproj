@@ -162,9 +162,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="assert.hpp" />
+    <ClInclude Include="BufferBinding.h" />
+    <ClInclude Include="buffers\BufferManager.h" />
+    <ClInclude Include="buffers\CompData.h" />
     <ClInclude Include="ByteArray.h" />
     <ClInclude Include="ByteArray.ipp" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="buffers\MutableBufferCoordinator.h" />
+    <ClInclude Include="buffers\ICompData.h" />
+    <ClInclude Include="buffers\MutableBufferOptions.hpp" />
+    <ClInclude Include="buffers\PartitionManager.h" />
+    <ClInclude Include="buffers\CompData.hpp" />
+    <ClInclude Include="buffers\CompManager.hpp" />
+    <ClInclude Include="buffers\MutableBufferCoordinator.hpp" />
     <ClInclude Include="renderer\ConcSyncBuffer.hpp" />
     <ClInclude Include="renderer\ConcSyncInserter.hpp" />
     <ClInclude Include="renderer\ConcSyncBuffer.h" />
@@ -206,9 +216,11 @@
     <ClInclude Include="renderer\ShaderStorageBinder.h" />
     <ClInclude Include="renderer\ShaderStorageManager.ipp" />
     <ClInclude Include="renderer\SyncManager.h" />
-    <ClInclude Include="renderer\SyncQueue.h" />
     <ClInclude Include="renderer\SyncBuffer.h" />
     <ClInclude Include="renderer\ConcSyncInserter.h" />
+    <ClInclude Include="buffers\SystemManager.h" />
+    <ClInclude Include="buffers\System.h" />
+    <ClInclude Include="buffers\SystemManager.hpp" />
     <ClInclude Include="ThreadLicense.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
@@ -216,9 +228,14 @@
     <ClInclude Include="VEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="buffers\CompManager.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
+    <ClCompile Include="buffers\BufferManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ecs\ComponentManager.cpp" />
     <ClCompile Include="ecs\Coordinator.cpp" />
+    <ClCompile Include="buffers\PartitionManager.cpp" />
     <ClCompile Include="renderer\DefferedRenderer.cpp" />
     <ClCompile Include="ecs\EntityManager.cpp" />
     <ClCompile Include="renderer\IndirectDrawerCuller.cpp" />
@@ -236,7 +253,6 @@
     <ClCompile Include="renderer\TextureManager.cpp" />
     <ClCompile Include="renderer\ShaderStorageBinder.cpp" />
     <ClInclude Include="renderer\SyncManager.ipp" />
-    <ClCompile Include="renderer\SyncQueue.cpp" />
     <ClCompile Include="renderer\SyncBuffer.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Timer.cpp" />
