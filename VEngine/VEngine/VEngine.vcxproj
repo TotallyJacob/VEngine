@@ -218,11 +218,13 @@
     <ClInclude Include="renderer\SyncManager.h" />
     <ClInclude Include="renderer\SyncBuffer.h" />
     <ClInclude Include="renderer\ConcSyncInserter.h" />
-    <ClInclude Include="buffers\SystemManager.h" />
+    <ClInclude Include="buffers\BufferSystemManager.h" />
     <ClInclude Include="buffers\System.h" />
-    <ClInclude Include="buffers\SystemManager.ipp" />
+    <ClInclude Include="buffers\BufferSystemManager.ipp" />
     <ClInclude Include="buffers\TestComponent.h" />
     <ClInclude Include="buffers\TestSystem.h" />
+    <ClInclude Include="buffers\StaticCompData.h" />
+    <ClInclude Include="buffers\StaticCompData.ipp" />
     <ClInclude Include="ThreadLicense.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
@@ -233,7 +235,7 @@
     <ClInclude Include="buffers\CompManager.h">
       <FileType>CppCode</FileType>
     </ClInclude>
-    <ClCompile Include="buffers\BufferManager.cpp" />
+    <ClInclude Include="buffers\BufferManager.ipp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ecs\ComponentManager.cpp" />
     <ClCompile Include="ecs\Coordinator.cpp" />
@@ -256,6 +258,7 @@
     <ClCompile Include="renderer\ShaderStorageBinder.cpp" />
     <ClInclude Include="renderer\SyncManager.ipp" />
     <ClCompile Include="renderer\SyncBuffer.cpp" />
+    <ClCompile Include="buffers\BufferSystemManager.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="VEngine.cpp" />

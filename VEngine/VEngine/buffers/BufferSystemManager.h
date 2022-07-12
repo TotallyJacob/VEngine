@@ -10,7 +10,7 @@
 namespace buf
 {
 
-class SystemManager
+class BufferSystemManager
 {
 
     public:
@@ -32,4 +32,4 @@ class SystemManager
 
 }; // namespace buf
 
-#include "SystemManager.ipp"
+#include "BufferSystemManager.ipp"

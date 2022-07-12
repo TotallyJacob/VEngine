@@ -2,19 +2,22 @@
 
 namespace buf
 {
-void MutableBufferCoordinator::init()
+MBC_TEMPLATE
+void MutableBufferCoordinator MBC_IDENTIFIER::init()
 {
-    m_buffer_component_manager = std::make_unique<CompManager>();
-    m_partition_component_manager = std::make_unique<CompManager>();
+    m_buffer_component_manager = std::make_unique<CompManager<StaticCompData, num_buffers>>();
+    m_partition_component_manager = std::make_unique<CompManager<CompData>>();
 
-    m_buffer_manager = std::make_unique<BufferManager>();
+    m_buffer_manager = std::make_unique<BufferManager<num_buffers>>();
     m_partition_manager = std::make_unique<PartitionManager>();
 
 
-    m_buffer_system_manager = std::make_unique<SystemManager>();
-    m_partition_system_manager = std::make_unique<SystemManager>();
+    m_buffer_system_manager = std::make_unique<BufferSystemManager>();
+    m_partition_system_manager = std::make_unique<BufferSystemManager>();
 }
-[[nodiscard]] BufferId MutableBufferCoordinator::create_buffer(unsigned int num_partitions)
+
+MBC_TEMPLATE
+[[nodiscard]] BufferId MutableBufferCoordinator MBC_IDENTIFIER::create_buffer(unsigned int num_partitions)
 {
     auto buffer_id = m_buffer_manager->create_buffer();
 
@@ -22,7 +25,9 @@ void MutableBufferCoordinator::init()
 
     return buffer_id;
 }
-void MutableBufferCoordinator::destroy_buffer(BufferId buffer)
+
+MBC_TEMPLATE
+void MutableBufferCoordinator MBC_IDENTIFIER::destroy_buffer(BufferId buffer)
 {
 
     m_partition_manager->for_each_partition(buffer,
@@ -39,20 +44,23 @@ void MutableBufferCoordinator::destroy_buffer(BufferId buffer)
     m_buffer_manager->destroy_buffer(buffer);
 }
 
-
+MBC_TEMPLATE
 template <typename T>
-void MutableBufferCoordinator::register_buffer_component(const Id preallocation_size)
+void MutableBufferCoordinator MBC_IDENTIFIER::register_buffer_component()
 {
-    m_buffer_component_manager->register_components<T>(preallocation_size);
-}
-template <typename T>
-void MutableBufferCoordinator::register_partition_component(const Id preallocation_size)
-{
-    m_partition_component_manager->register_components<T>(preallocation_size);
+    m_buffer_component_manager->register_component<T>();
 }
 
+MBC_TEMPLATE
 template <typename T>
-void MutableBufferCoordinator::add_buffer_component(BufferId buffer, T component)
+void MutableBufferCoordinator MBC_IDENTIFIER::register_partition_component(const Id preallocation_size)
+{
+    m_partition_component_manager->register_component<T>(preallocation_size);
+}
+
+MBC_TEMPLATE
+template <typename T>
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_component(BufferId buffer, T component)
 {
     m_buffer_component_manager->add_component<T>(buffer, component);
 
@@ -63,14 +71,14 @@ void MutableBufferCoordinator::add_buffer_component(BufferId buffer, T component
     m_buffer_system_manager->id_signature_changed(buffer, signature);
 }
 
+MBC_TEMPLATE
 template <typename T>
-void MutableBufferCoordinator::add_buffer_partition_component(BufferId buffer, T component)
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_partition_component(BufferId buffer, T component)
 {
     m_partition_manager->for_each_partition(buffer,
                                             [&](PartitionId id)
                                             {
                                                 m_partition_component_manager->add_component<T>(id, component);
-                                                m_partition_manager->set_signature(id, signature);
 
                                                 auto signature = m_partition_manager->get_signature(id);
                                                 signature.set(m_partition_component_manager->get_component_type<T>(), true);
@@ -82,54 +90,62 @@ void MutableBufferCoordinator::add_buffer_partition_component(BufferId buffer, T
 
 
 
-
+MBC_TEMPLATE
 template <typename T>
-T& MutableBufferCoordinator::get_buffer_component(Id entity)
+T& MutableBufferCoordinator MBC_IDENTIFIER::get_buffer_component(Id id)
 {
-    return m_buffer_component_manager->get_component<T>(entity);
+    return m_buffer_component_manager->get_component<T>(id);
 }
 
+MBC_TEMPLATE
 template <typename T>
-ComponentType MutableBufferCoordinator::get_buffer_component_type()
+ComponentType MutableBufferCoordinator MBC_IDENTIFIER::get_buffer_component_type()
 {
     return m_buffer_component_manager->get_component_type<T>();
 }
 
+MBC_TEMPLATE
 template <typename T>
-T& MutableBufferCoordinator::get_partition_component(Id entity)
+T& MutableBufferCoordinator MBC_IDENTIFIER::get_partition_component(Id id)
 {
-    return m_partition_component_manager->get_component<T>(entity);
+    return m_partition_component_manager->get_component<T>(id);
 }
 
+MBC_TEMPLATE
 template <typename T>
-ComponentType MutableBufferCoordinator::get_partition_component_type()
+ComponentType MutableBufferCoordinator MBC_IDENTIFIER::get_partition_component_type()
 {
     return m_partition_component_manager->get_component_type<T>();
 }
 
-
+MBC_TEMPLATE
 // System methods
 template <typename T>
-std::shared_ptr<T> MutableBufferCoordinator::register_buffer_system()
+std::shared_ptr<T> MutableBufferCoordinator MBC_IDENTIFIER::register_buffer_system()
 {
     return m_buffer_system_manager->register_system<T>();
 }
 
+MBC_TEMPLATE
 template <typename T>
-void MutableBufferCoordinator::set_buffer_system_signature(Signature signature)
+void MutableBufferCoordinator MBC_IDENTIFIER::set_buffer_system_signature(Signature signature)
 {
     m_buffer_system_manager->set_signature<T>(signature);
 }
 
+MBC_TEMPLATE
 template <typename T>
-std::shared_ptr<T> MutableBufferCoordinator::register_partition_system()
+std::shared_ptr<T> MutableBufferCoordinator MBC_IDENTIFIER::register_partition_system()
 {
     return m_partition_system_manager->register_system<T>();
 }
 
+MBC_TEMPLATE
 template <typename T>
-void MutableBufferCoordinator::set_partition_system_signature(Signature signature)
+void MutableBufferCoordinator MBC_IDENTIFIER::set_partition_system_signature(Signature signature)
 {
     m_partition_system_manager->set_signature<T>(signature);
 }
+
+
 }; // namespace buf

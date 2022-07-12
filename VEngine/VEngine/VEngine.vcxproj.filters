@@ -127,21 +127,6 @@
     <Filter Include="Source Files\buffers">
       <UniqueIdentifier>{347b6b8f-e2dc-4c6b-b545-5ea96decdc3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ecs\standard">
-      <UniqueIdentifier>{17f0c8e6-ac29-4021-8296-301ca1ca9875}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ecs\standard">
-      <UniqueIdentifier>{e345eff6-f50d-42d6-bcc7-e4a89d9d0a09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ecs\standard\non-managers">
-      <UniqueIdentifier>{de67609a-b174-43d6-83e7-41e875e22883}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ecs\dynamic">
-      <UniqueIdentifier>{5e8a6b3d-2334-4456-8f27-744db9577057}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ecs\dynamic">
-      <UniqueIdentifier>{fc55d0c3-8879-4ca3-9351-0e682901313f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\buffers\bcs">
       <UniqueIdentifier>{f629917d-f60d-487b-a88c-0783da3590f4}</UniqueIdentifier>
     </Filter>
@@ -171,6 +156,9 @@
     </Filter>
     <Filter Include="Source Files\buffers\bcs\none-managers">
       <UniqueIdentifier>{ec52ff76-132e-4951-9a8f-0c410d14af9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ecs\non-managers">
+      <UniqueIdentifier>{de67609a-b174-43d6-83e7-41e875e22883}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -226,13 +214,13 @@
       <Filter>Header Files\renderer\mesh</Filter>
     </ClInclude>
     <ClInclude Include="ecs\ComponentArray.h">
-      <Filter>Header Files\ecs\standard\non-managers</Filter>
+      <Filter>Header Files\ecs\non-managers</Filter>
     </ClInclude>
     <ClInclude Include="ecs\IComponentArray.h">
-      <Filter>Header Files\ecs\standard\non-managers</Filter>
+      <Filter>Header Files\ecs\non-managers</Filter>
     </ClInclude>
     <ClInclude Include="ecs\System.h">
-      <Filter>Header Files\ecs\standard\non-managers</Filter>
+      <Filter>Header Files\ecs\non-managers</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
@@ -327,18 +315,6 @@
     <ClInclude Include="BufferBinding.h">
       <Filter>Header Files\renderer\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="ecs\SystemManager.h">
-      <Filter>Header Files\ecs\standard</Filter>
-    </ClInclude>
-    <ClInclude Include="ecs\ComponentManager.h">
-      <Filter>Header Files\ecs\standard</Filter>
-    </ClInclude>
-    <ClInclude Include="ecs\Coordinator.h">
-      <Filter>Header Files\ecs\standard</Filter>
-    </ClInclude>
-    <ClInclude Include="ecs\EntityManager.h">
-      <Filter>Header Files\ecs\standard</Filter>
-    </ClInclude>
     <ClInclude Include="buffers\CompData.h">
       <Filter>Header Files\buffers\bcs\none-managers</Filter>
     </ClInclude>
@@ -360,7 +336,7 @@
     <ClInclude Include="buffers\MutableBufferOptions.hpp">
       <Filter>Header Files\buffers\bcs</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\SystemManager.h">
+    <ClInclude Include="buffers\BufferSystemManager.h">
       <Filter>Header Files\buffers\bcs\managers</Filter>
     </ClInclude>
     <ClInclude Include="buffers\CompManager.h">
@@ -369,7 +345,7 @@
     <ClInclude Include="buffers\CompManager.ipp">
       <Filter>Source Files\buffers\bcs\managers</Filter>
     </ClInclude>
-    <ClInclude Include="buffers\SystemManager.ipp">
+    <ClInclude Include="buffers\BufferSystemManager.ipp">
       <Filter>Source Files\buffers\bcs\managers</Filter>
     </ClInclude>
     <ClInclude Include="buffers\CompData.ipp">
@@ -383,6 +359,27 @@
     </ClInclude>
     <ClInclude Include="buffers\TestSystem.h">
       <Filter>Header Files\buffers\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="buffers\StaticCompData.h">
+      <Filter>Header Files\buffers\bcs\none-managers</Filter>
+    </ClInclude>
+    <ClInclude Include="buffers\StaticCompData.ipp">
+      <Filter>Source Files\buffers\bcs\none-managers</Filter>
+    </ClInclude>
+    <ClInclude Include="buffers\BufferManager.ipp">
+      <Filter>Source Files\buffers\bcs\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\ComponentManager.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\Coordinator.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\EntityManager.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs\SystemManager.h">
+      <Filter>Header Files\ecs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,23 +440,23 @@
     <ClCompile Include="renderer\SyncBuffer.cpp">
       <Filter>Source Files\renderer\sync</Filter>
     </ClCompile>
-    <ClCompile Include="ecs\ComponentManager.cpp">
-      <Filter>Source Files\ecs\standard</Filter>
-    </ClCompile>
-    <ClCompile Include="ecs\Coordinator.cpp">
-      <Filter>Source Files\ecs\standard</Filter>
-    </ClCompile>
-    <ClCompile Include="ecs\EntityManager.cpp">
-      <Filter>Source Files\ecs\standard</Filter>
-    </ClCompile>
-    <ClCompile Include="ecs\SystemManager.cpp">
-      <Filter>Source Files\ecs\standard</Filter>
-    </ClCompile>
-    <ClCompile Include="buffers\BufferManager.cpp">
-      <Filter>Source Files\buffers\bcs\managers</Filter>
-    </ClCompile>
     <ClCompile Include="buffers\PartitionManager.cpp">
       <Filter>Source Files\buffers\bcs\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="buffers\BufferSystemManager.cpp">
+      <Filter>Source Files\buffers\bcs\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\ComponentManager.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\Coordinator.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\EntityManager.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ecs\SystemManager.cpp">
+      <Filter>Source Files\ecs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

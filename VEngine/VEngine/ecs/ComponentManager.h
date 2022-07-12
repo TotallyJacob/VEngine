@@ -57,13 +57,7 @@ class ComponentManager
             return get_compoent_array<T>()->get_data(entity);
         }
 
-        void entity_destroyed(Entity entity)
-        {
-            for (auto const& [type_name, component] : m_component_arrays)
-            {
-                component->entity_destroyed(entity);
-            }
-        }
+        void entity_destroyed(Entity entity);
 
     private:
 

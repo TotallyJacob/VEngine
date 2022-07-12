@@ -9,13 +9,14 @@
 namespace buf
 {
 
+template <size_t num_buffers>
 class TestSystem : public System
 {
     public:
 
-        MutableBufferCoordinator& mbc;
+        MutableBufferCoordinator<num_buffers>& mbc;
 
-        TestSystem(MutableBufferCoordinator& mbc) : mbc(mbc)
+        TestSystem(MutableBufferCoordinator<num_buffers>& mbc) : mbc(mbc)
         {
         }
 
