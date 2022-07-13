@@ -30,18 +30,29 @@ class MutableBufferCoordinator
         [[nodiscard]] auto create_buffer(unsigned int num_partitions) -> BufferId;
         void               destroy_buffer(BufferId buffer);
 
-        template <typename T>
-        void register_buffer_component();
 
-        template <typename T>
-        void register_partition_component(const Id preallocation_size = preallocation_num_partitions());
+        // Registering components
+        template <typename Initial, typename... T>
+        void register_buffer_components();
 
-        template <typename T>
-        void add_buffer_component(BufferId buffer, T component);
+        template <typename Initial, typename... T>
+        void register_partition_components(const Id preallocation_size = preallocation_num_partitions());
 
-        template <typename T>
-        void add_buffer_partition_component(BufferId buffer, T component);
+        // Adding components
+        template <typename I, typename... T>
+        void add_buffer_components(BufferId buffer);
 
+        template <typename I, typename... T>
+        void add_buffer_components(BufferId buffer, I initial, T... other);
+
+        template <typename I, typename... T>
+        void add_buffer_partition_components(BufferId buffer);
+
+        template <typename I, typename... T>
+        void add_buffer_partition_components(BufferId buffer, I initial, T... other);
+
+
+        // getting component data
         template <typename T>
         auto get_buffer_component(Id entity) -> T&;
 
@@ -70,6 +81,14 @@ class MutableBufferCoordinator
 
 
     private:
+
+
+        template <typename T>
+        void add_buffer_component(BufferId buffer, T component = {});
+
+        template <typename T>
+        void add_buffer_partition_component(BufferId buffer, T component = {});
+
 
         static constexpr auto preallocation_num_partitions() -> PartitionId
         {

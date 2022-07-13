@@ -44,21 +44,21 @@ COMP_MANAGER_TEMPLATE
 template <typename DATA_TYPE>
 void CompManager COMP_MANAGER_IDENTIFIER::add_component(Id id, DATA_TYPE component)
 {
-    get_compoent_data<DATA_TYPE>()->insert_data(id, component);
+    get_component_data<DATA_TYPE>()->insert_data(id, component);
 }
 
 COMP_MANAGER_TEMPLATE
 template <typename DATA_TYPE>
 void CompManager COMP_MANAGER_IDENTIFIER::remove_component(Id id)
 {
-    get_compoent_data<DATA_TYPE>()->remove_data(id);
+    get_component_data<DATA_TYPE>()->remove_data(id);
 }
 
 COMP_MANAGER_TEMPLATE
 template <typename DATA_TYPE>
 auto CompManager COMP_MANAGER_IDENTIFIER::get_component(Id id) -> DATA_TYPE&
 {
-    return get_compoent_data<DATA_TYPE>()->get_data(id);
+    return get_component_data<DATA_TYPE>()->get_data(id);
 }
 
 COMP_MANAGER_TEMPLATE

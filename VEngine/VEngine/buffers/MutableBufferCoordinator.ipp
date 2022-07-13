@@ -45,17 +45,19 @@ void MutableBufferCoordinator MBC_IDENTIFIER::destroy_buffer(BufferId buffer)
 }
 
 MBC_TEMPLATE
-template <typename T>
-void MutableBufferCoordinator MBC_IDENTIFIER::register_buffer_component()
+template <typename Initial, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::register_buffer_components()
 {
-    m_buffer_component_manager->register_component<T>();
+    m_buffer_component_manager->register_component<Initial>();
+    (m_buffer_component_manager->register_component<T>(), ...);
 }
 
 MBC_TEMPLATE
-template <typename T>
-void MutableBufferCoordinator MBC_IDENTIFIER::register_partition_component(const Id preallocation_size)
+template <typename Initial, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::register_partition_components(const Id preallocation_size)
 {
-    m_partition_component_manager->register_component<T>(preallocation_size);
+    m_partition_component_manager->register_component<Initial>(preallocation_size);
+    (m_partition_component_manager->register_component<T>(preallocation_size), ...);
 }
 
 MBC_TEMPLATE
@@ -70,6 +72,40 @@ void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_component(BufferId buff
 
     m_buffer_system_manager->id_signature_changed(buffer, signature);
 }
+
+MBC_TEMPLATE
+template <typename I, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_components(BufferId buffer)
+{
+    add_buffer_component<I>(buffer);
+    (add_buffer_component<T>(buffer), ...);
+}
+
+MBC_TEMPLATE
+template <typename I, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_partition_components(BufferId buffer)
+{
+    add_buffer_partition_component<I>(buffer);
+    (add_buffer_partition_component<T>(buffer), ...);
+}
+
+MBC_TEMPLATE
+template <typename I, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_components(BufferId buffer, I initial, T... other)
+{
+    add_buffer_component<I>(buffer, initial);
+    (add_buffer_component<T>(buffer, std::forward<T>(other)), ...);
+}
+
+MBC_TEMPLATE
+template <typename I, typename... T>
+void MutableBufferCoordinator MBC_IDENTIFIER::add_buffer_partition_components(BufferId buffer, I initial, T... other)
+{
+    add_buffer_partition_component<I>(buffer, initial);
+    (add_buffer_partition_component<T>(buffer, std::forward<T>(other)), ...);
+}
+
+
 
 MBC_TEMPLATE
 template <typename T>
