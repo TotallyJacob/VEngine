@@ -23,10 +23,10 @@ void ByteArray BYTE_ARRAY_IDENTIFIER::init(char* byte_array, const unsigned int 
 
     for (unsigned int i = 0; i < num_buffers; i++)
     {
-        const size_t alignment_bytes_from_prev_bufs = (sizeof(DATA_TYPE) * num_elements + alignment_bytes) * i;
-        new (m_data_bytes + alignment_bytes_from_prev_bufs) DATA_TYPE[num_elements]{};
+        const size_t alignment_bytes_from_prev_bufs = ((sizeof(DATA_TYPE) * num_elements) + alignment_bytes) * i;
+        data[i] = new (m_data_bytes + alignment_bytes_from_prev_bufs) DATA_TYPE[num_elements]{};
 
-        data[i] = reinterpret_cast<DATA_TYPE*>(m_data_bytes + alignment_bytes_from_prev_bufs);
+        // data[i] = reinterpret_cast<DATA_TYPE*>(m_data_bytes + alignment_bytes_from_prev_bufs); -> maybe un-nessesary
     }
 }
 
@@ -123,22 +123,19 @@ auto ByteArray BYTE_ARRAY_IDENTIFIER::get_byte(const unsigned int byte_index) co
 }
 
 BYTE_ARRAY_TEMPLATE
-auto ByteArray BYTE_ARRAY_IDENTIFIER::get_alignment_bytes_start_index(const unsigned int buffer) const
-    -> const unsigned int
+auto ByteArray BYTE_ARRAY_IDENTIFIER::get_alignment_bytes_start_index(const unsigned int buffer) const -> const unsigned int
 {
     return (m_sizeof_elements_per_buf * (buffer + 1)) + (m_buffer_alignment * buffer);
 }
 
 BYTE_ARRAY_TEMPLATE
-auto ByteArray BYTE_ARRAY_IDENTIFIER::get_none_alignment_bytes_start_index(const unsigned int buffer) const
-    -> const unsigned int
+auto ByteArray BYTE_ARRAY_IDENTIFIER::get_none_alignment_bytes_start_index(const unsigned int buffer) const -> const unsigned int
 {
     return (m_sizeof_elements_per_buf + m_buffer_alignment) * buffer;
 }
 
 BYTE_ARRAY_TEMPLATE
-auto ByteArray BYTE_ARRAY_IDENTIFIER::get_all_alignment_bytes(const unsigned int buffer) const
-    -> const std::vector<std::bitset<8>>
+auto ByteArray BYTE_ARRAY_IDENTIFIER::get_all_alignment_bytes(const unsigned int buffer) const -> const std::vector<std::bitset<8>>
 {
     std::vector<std::bitset<8>> bytes;
     bytes.reserve(m_buffer_alignment);
@@ -155,8 +152,7 @@ auto ByteArray BYTE_ARRAY_IDENTIFIER::get_all_alignment_bytes(const unsigned int
 }
 
 BYTE_ARRAY_TEMPLATE
-auto ByteArray BYTE_ARRAY_IDENTIFIER::get_no_alignment_bytes(const unsigned int buffer) const
-    -> const std::vector<std::bitset<8>>
+auto ByteArray BYTE_ARRAY_IDENTIFIER::get_no_alignment_bytes(const unsigned int buffer) const -> const std::vector<std::bitset<8>>
 {
 
     std::vector<std::bitset<8>> bytes;

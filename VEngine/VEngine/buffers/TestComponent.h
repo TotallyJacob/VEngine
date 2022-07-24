@@ -2,17 +2,36 @@
 
 #include "GL/glew.h"
 
+#include "../ByteArray.h"
+
 namespace buf
 {
-class TestComponent
+// BC
+
+struct TestBC
 {
-    public:
 
         GLuint     buffer = 0;
-        GLintptr   index = 0;
-        GLenum     target = 0;
         GLsizeiptr bytes = 0;
-        GLbitfield flags = GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT | GL_MAP_COHERENT_BIT;
         char*      persistent_map = nullptr;
 };
+
+struct FlagsBC
+{
+        GLbitfield flags = GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT | GL_MAP_COHERENT_BIT;
+};
+
+
+struct ElementsBC
+{
+        unsigned int num_elements = 0;
+};
+
+// PC
+
+class TestPC
+{
+        char* persistent_map = nullptr;
+};
+
 }; // namespace buf

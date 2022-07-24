@@ -14,6 +14,10 @@ void MutableBufferCoordinator MBC_IDENTIFIER::init()
 
     m_buffer_system_manager = std::make_unique<BufferSystemManager>();
     m_partition_system_manager = std::make_unique<BufferSystemManager>();
+
+
+    glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &m_ssbo_alignment);
+    glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &m_ubo_alignment);
 }
 
 MBC_TEMPLATE

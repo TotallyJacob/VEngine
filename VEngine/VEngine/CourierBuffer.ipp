@@ -13,7 +13,7 @@ CourierBuffer COURIER_BUFFER_IDENTIFIER::CourierBuffer(unsigned int num_elements
 COURIER_BUFFER_TEMPLATE
 void CourierBuffer COURIER_BUFFER_IDENTIFIER::init(unsigned int num_elements, size_t alignment_bytes)
 {
-    m_data.resize((num_elements + alignment_bytes) * sizeof(DATA_TYPE)); // Allocate the chars on heap.
+    m_data.resize((num_elements * sizeof(DATA_TYPE)) + alignment_bytes); // Allocate the chars on heap.
     m_byte_array.init(&m_data.front(), num_elements, alignment_bytes);
 }
 
